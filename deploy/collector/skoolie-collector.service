@@ -1,0 +1,17 @@
+[Unit]
+Description=skoolie collector (HAC + school sources → Firestore)
+After=docker.service network-online.target
+Requires=docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# Substitute the account that owns /opt/skoolie and can talk to the docker socket — the README's
+# install step rewrites this line. Left as a placeholder on purpose: a real username here would be
+# copied verbatim onto hosts that do not have it, and systemd fails 217/USER at first fire.
+User=REPLACE_WITH_YOUR_USER
+WorkingDirectory=/opt/skoolie/repo/deploy/collector
+# flock: never overlap two runs (one HAC session at a time).
+ExecStart=/usr/bin/flock -n /opt/skoolie/collector.lock /usr/bin/docker compose run --rm collector --adapter hac --all-periods
+TimeoutStartSec=15min
+Nice=10

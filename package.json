@@ -1,0 +1,26 @@
+{
+  "name": "skoolie",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Self-hosted family school dashboard: Home Access Center → your Firebase project → a parent-friendly per-student view",
+  "license": "Apache-2.0",
+  "repository": { "type": "git", "url": "git+https://github.com/lobsterclause/skoolie-oss.git" },
+  "homepage": "https://github.com/lobsterclause/skoolie-oss#readme",
+  "bugs": { "url": "https://github.com/lobsterclause/skoolie-oss/issues" },
+  "packageManager": "pnpm@11.4.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "pnpm -r --if-present test",
+    "test:rules": "pnpm --filter @skoolie/firebase test:rules",
+    "verify": "bash .claude/verify.sh",
+    "dev:web": "pnpm --filter @skoolie/web dev",
+    "collect": "pnpm --filter @skoolie/collector start",
+    "coverage": "pnpm -r --if-present test -- --run --coverage",
+    "mutate": "pnpm --filter @skoolie/shared --filter @skoolie/collector --filter @skoolie/web exec stryker run",
+    "e2e": "pnpm --filter @skoolie/web e2e",
+    "verify:full": "bash .claude/verify.sh && pnpm --filter @skoolie/web test:env && pnpm mutate && pnpm e2e"
+  }
+}

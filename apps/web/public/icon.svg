@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Ink-blue rounded square with a paper-white lowercase s: the app's "ruled paper and ink" theme. -->
+  <rect width="512" height="512" rx="112" fill="#3950D3"/>
+  <text x="256" y="352" text-anchor="middle" font-family="Nunito, Nunito Variable, Figtree, -apple-system, system-ui, sans-serif" font-weight="800" font-size="320" fill="#FFFFFF">s</text>
+</svg>

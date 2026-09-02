@@ -1,0 +1,15 @@
+[Unit]
+# Installed as a USER unit — the README's sed strips User= and the docker.service/network-online lines,
+# which a user systemd instance cannot resolve.
+Description=skoolie teacher-link harvester (school mail → families/{id}.teacherLinks)
+After=docker.service network-online.target
+Requires=docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=REPLACE_WITH_YOUR_USER
+WorkingDirectory=/opt/skoolie/repo/deploy/collector
+ExecStart=/usr/bin/flock -n /opt/skoolie/links.lock /usr/bin/docker compose run --rm collector --adapter links
+TimeoutStartSec=10min
+Nice=10

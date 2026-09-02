@@ -1,0 +1,11 @@
+[Unit]
+Description=Harvest teacher links from school mail twice a day
+
+[Timer]
+OnCalendar=*-*-* 07:15,16:15 America/Chicago
+RandomizedDelaySec=600
+Persistent=true
+Unit=skoolie-links.service
+
+[Install]
+WantedBy=timers.target

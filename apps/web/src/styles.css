@@ -1,0 +1,93 @@
+/*
+ * Global CSS. Everything visual comes from Astryx components, the built `skoolie` theme and StyleX
+ * (`src/ui/styles.ts`, compiled by @stylexjs/unplugin). What remains here is what neither can
+ * reach: the document ground, and SVG chart marks / Recharts internals styled by class. Tokens only.
+ * It lives in the `components` layer so it can never out-rank the design system reset by accident.
+ */
+@layer reset, astryx-base, astryx-theme, components;
+
+@import "@astryxdesign/core/reset.css";
+@import "@astryxdesign/core/astryx.css";
+@import "./skoolie.css";
+
+@layer components {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+  body {
+    background: var(--color-background-body);
+    color: var(--color-text-primary);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Charts (SVG). The series wears the accent; context marks wear the data-neutral token; text wears text tokens. */
+  .sk-spark { display: block; inline-size: 72px; block-size: 24px; overflow: visible; }
+  .sk-spark-line { fill: none; stroke: var(--color-accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .sk-spark-area { fill: var(--color-accent); opacity: 0.1; }
+  .sk-spark-dot { fill: var(--color-accent); stroke: var(--color-background-surface); stroke-width: 2; }
+
+  .sk-load { display: block; inline-size: 100%; max-inline-size: 360px; block-size: auto; overflow: visible; }
+  .sk-load-bar { fill: var(--color-data-neutral); }
+  .sk-load-bar[data-today="true"] { fill: var(--color-accent); }
+  .sk-load-label { fill: var(--color-text-secondary); font-size: var(--font-size-xs); font-family: var(--font-family-body); text-anchor: middle; }
+  .sk-load-label[data-today="true"] { fill: var(--color-text-primary); font-weight: var(--font-weight-bold); }
+  .sk-load-count { fill: var(--color-text-primary); font-size: var(--font-size-xs); font-family: var(--font-family-body); text-anchor: middle; font-variant-numeric: tabular-nums; }
+
+  .sk-chart { inline-size: 100%; block-size: 200px; }
+  .sk-chart .recharts-cartesian-grid line { stroke: var(--color-border); }
+  .sk-chart .recharts-text { fill: var(--color-text-secondary); font-size: var(--font-size-xs); font-family: var(--font-family-body); }
+  .sk-tip {
+    background: var(--color-background-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-element);
+    padding: var(--spacing-2) var(--spacing-3);
+    box-shadow: var(--shadow-low, none);
+    font-size: var(--font-size-sm);
+  }
+
+  /* Attendance month grid: a fixed 7-column calendar; day markers carry a label in the title and the list below. */
+  .sk-month {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: var(--spacing-1);
+    text-align: center;
+  }
+  .sk-month-wd { font-size: var(--font-size-xs); color: var(--color-text-secondary); padding-block: var(--spacing-1); }
+  .sk-month-day {
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-element);
+    font-size: var(--font-size-sm);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-secondary);
+  }
+  .sk-month-day[data-tone="bad"] { background: var(--color-error); color: var(--color-on-error); font-weight: var(--font-weight-bold); }
+  .sk-month-day[data-tone="warn"] { background: var(--color-warning); color: var(--color-on-warning); font-weight: var(--font-weight-bold); }
+  .sk-month-day[data-tone="other"] { background: var(--color-background-muted); color: var(--color-text-primary); }
+  .sk-month-day[data-today="true"] { outline: 2px solid var(--color-accent); outline-offset: -2px; }
+
+  /* "All caught up": a single-line check mark that draws itself once (≈ slow token), then rests. */
+  .sk-check { inline-size: 40px; block-size: 40px; display: block; }
+  .sk-check-path {
+    fill: none;
+    stroke: var(--color-success);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 60;
+    stroke-dashoffset: 0;
+    animation: sk-draw var(--duration-slow) var(--ease-standard, ease) both;
+  }
+  @keyframes sk-draw {
+    from { stroke-dashoffset: 60; }
+    to { stroke-dashoffset: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sk-check-path { animation: none; }
+    .sk-chart .recharts-line-curve { animation: none !important; }
+  }
+}

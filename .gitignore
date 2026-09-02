@@ -1,0 +1,36 @@
+node_modules/
+dist/
+build/
+coverage/
+*.log
+.env
+.env.*
+!.env.example
+secrets/
+profile/
+browser-data/
+*.tsbuildinfo
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+services/collector/fixtures/raw/
+.DS_Store
+firebase/hosting-dist/
+
+# splitstream worktrees
+.claude/worktrees/
+apps/web/dist-demo/
+apps/web/shots/
+
+# CodeGraph index
+.codegraph/
+
+# test + mutation output
+apps/web/dist-demo/
+apps/web/playwright-report/
+apps/web/test-results/
+**/.stryker-tmp/
+**/reports/mutation/
+coverage/
+**/coverage/

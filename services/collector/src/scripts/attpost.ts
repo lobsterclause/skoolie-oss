@@ -1,0 +1,14 @@
+import "../boot.js";
+import * as cheerio from "cheerio";
+import { HAC_PATHS, HacClient } from "../adapters/hac/client.js";
+import { attendancePrevMonthArg } from "../adapters/hac/parse.js";
+const c = new HacClient(process.env.HAC_BASE_URL!, process.env.HAC_USERNAME!, process.env.HAC_PASSWORD!, { sessionFile: process.env.SKOOLIE_SESSION_FILE ?? "./browser-data/hac-session.json" });
+const month = (h: string) => cheerio.load(h)("#plnMain_cldAttendance td[align='center'][width='70%']").text().trim();
+const html = await c.get(HAC_PATHS.attendance);
+const $ = cheerio.load(html);
+const form: Record<string, string> = {};
+$("form input[type=hidden], form input[type=text], form select").each((_, el) => { const n = $(el).attr("name"); if (n) form[n] = $(el).attr("value") ?? $(el).val()?.toString() ?? ""; });
+const prev = attendancePrevMonthArg(html)!;
+console.log("month:", month(html), "| hidden fields:", Object.keys(form).length, "| prev:", prev);
+const back = await c.post(HAC_PATHS.attendance, { ...form, __EVENTTARGET: prev.target, __EVENTARGUMENT: prev.argument });
+console.log("after full-form postback month:", month(back), "| viewstate changed:", cheerio.load(back)('input[name="__VIEWSTATE"]').attr("value") !== form["__VIEWSTATE"], "| prev now:", attendancePrevMonthArg(back));

@@ -1,0 +1,36 @@
+{
+  "name": "@skoolie/collector",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/run.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.3.247",
+    "@azure/msal-node": "^5.6.0",
+    "@browserbasehq/stagehand": "^4.0.2",
+    "@skoolie/shared": "workspace:*",
+    "cheerio": "^1.0.0",
+    "domhandler": "^6.0.1",
+    "firebase-admin": "^14.3.0",
+    "imapflow": "^1.7.6",
+    "mailparser": "^3.9.16",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@stryker-mutator/core": "^10.0.0",
+    "@stryker-mutator/vitest-runner": "^10.0.0",
+    "@types/mailparser": "^3.4.6",
+    "@types/node": "^22",
+    "@vitest/coverage-v8": "^4.1.11",
+    "fast-check": "^4.9.0",
+    "tsx": "^4.23.12",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.11"
+  }
+}

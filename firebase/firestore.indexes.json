@@ -1,0 +1,9 @@
+{
+  "indexes": [
+    { "collectionGroup": "assignments", "queryScope": "COLLECTION", "fields": [ { "fieldPath": "status", "order": "ASCENDING" }, { "fieldPath": "dueDate", "order": "ASCENDING" } ] },
+    { "collectionGroup": "assignments", "queryScope": "COLLECTION", "fields": [ { "fieldPath": "courseId", "order": "ASCENDING" }, { "fieldPath": "dueDate", "order": "DESCENDING" } ] },
+    { "collectionGroup": "changeEvents", "queryScope": "COLLECTION", "fields": [ { "fieldPath": "notifiedAt", "order": "ASCENDING" }, { "fieldPath": "at", "order": "ASCENDING" } ] },
+    { "collectionGroup": "runs", "queryScope": "COLLECTION", "fields": [ { "fieldPath": "adapter", "order": "ASCENDING" }, { "fieldPath": "startedAt", "order": "DESCENDING" } ] }
+  ],
+  "fieldOverrides": []
+}

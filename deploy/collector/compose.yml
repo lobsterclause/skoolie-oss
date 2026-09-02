@@ -1,0 +1,24 @@
+# On the collector host: /opt/skoolie/{.env,secrets/firebase-sa.json,profile,dumps}. Run via the systemd timer below.
+services:
+  collector:
+    build:
+      context: ../..
+      dockerfile: deploy/collector/Dockerfile
+    image: skoolie-collector:local
+    env_file: /opt/skoolie/.env
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/firebase-sa.json
+      SKOOLIE_PROFILE_DIR: /data/profile
+      SKOOLIE_DUMP_DIR: /data/dumps
+    secrets: [firebase-sa.json]
+    volumes:
+      - /opt/skoolie/profile:/data/profile
+      - /opt/skoolie/dumps:/data/dumps
+    # Not on the cipool stripe: the image cache lives in /var/lib/docker anyway, but state does not.
+    mem_limit: 2g
+    cpus: 2
+    read_only: false
+    init: true
+secrets:
+  firebase-sa.json:
+    file: /opt/skoolie/secrets/firebase-sa.json

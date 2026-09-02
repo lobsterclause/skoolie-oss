@@ -1,0 +1,50 @@
+name: Bug report
+description: Something behaves differently than it should
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Never paste real student data.** No HAC dumps, no Firestore documents, no dashboard
+        screenshots with real names, IDs, teachers, or schools in them. Reproduce with synthetic data
+        and share that. If the bug itself is a data-exposure problem, report it privately through the
+        Security tab instead.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what you got instead.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to reproduce
+      description: Commands or steps. Include the `--dry-run` output if it's a parser bug — scrubbed.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where
+      options:
+        - collector — HAC adapter / parsing
+        - collector — mail adapters (links, inbox)
+        - collector — Firestore sink, diff, CLI
+        - web app
+        - Firestore rules
+        - deploy (Docker, systemd)
+        - docs
+        - not sure
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Commit SHA or release you're on.
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      description: Node version, OS, and how you run the collector (locally, Docker, systemd timer).

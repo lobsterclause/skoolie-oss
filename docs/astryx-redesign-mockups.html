@@ -1,0 +1,1029 @@
+<title>Skoolie on Astryx</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  /* ---------- page chrome tokens (three-state theme) ---------- */
+  :root{
+    --pg-bg:#EEF1F5; --pg-surface:#FFFFFF; --pg-ink:#161A26; --pg-ink-2:#5B6274; --pg-line:#D6DBE4;
+    --pg-accent:#3950D3; --pg-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --pg-sans:"Nunito",Figtree,-apple-system,system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){ --pg-bg:#0C0F14; --pg-surface:#151A22; --pg-ink:#E4E7EE; --pg-ink-2:#9AA1B2; --pg-line:#262C38; --pg-accent:#B7C4FF; }
+  }
+  :root[data-theme="dark"]{ --pg-bg:#0C0F14; --pg-surface:#151A22; --pg-ink:#E4E7EE; --pg-ink-2:#9AA1B2; --pg-line:#262C38; --pg-accent:#B7C4FF; }
+
+  body{background:var(--pg-bg);color:var(--pg-ink);font-family:var(--pg-sans);font-size:16px;line-height:1.55;margin:0;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:40px 24px 80px}
+  h1{font-size:clamp(30px,4.5vw,44px);font-weight:800;line-height:1.05;letter-spacing:-.01em;margin:0 0 10px;text-wrap:balance}
+  .lede{max-width:62ch;color:var(--pg-ink-2);font-size:17px;margin:0 0 8px}
+  .meta{font-family:var(--pg-mono);font-size:12px;color:var(--pg-ink-2);display:flex;gap:18px;flex-wrap:wrap;margin:14px 0 0}
+  .meta b{color:var(--pg-ink);font-weight:500}
+  h2{font-size:22px;font-weight:800;margin:0 0 4px;text-wrap:balance}
+  .screen{display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:28px;padding:36px 0;border-top:1px solid var(--pg-line)}
+  .screen:first-of-type{border-top:0}
+  .screen .about p{margin:8px 0 0;color:var(--pg-ink-2);max-width:40ch}
+  .route{font-family:var(--pg-mono);font-size:12px;color:var(--pg-accent);margin:0 0 6px;display:block}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+  .chip{font-family:var(--pg-mono);font-size:11px;padding:3px 8px;border:1px solid var(--pg-line);border-radius:6px;background:var(--pg-surface);color:var(--pg-ink)}
+  .frames{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start;overflow-x:auto;padding:0 12px 16px}
+  .frame-wrap{display:flex;flex-direction:column;gap:18px;padding-top:4px}
+  .frame-label{font-family:var(--pg-mono);font-size:11px;color:var(--pg-ink-2);text-transform:uppercase;letter-spacing:.08em}
+  .screen.wide{grid-template-columns:1fr}
+  .screen.wide .about p{max-width:70ch}
+  @media (max-width:820px){.screen{grid-template-columns:1fr}}
+  @media (max-width:520px){.phone:not(.desktop){zoom:.78}.mini{zoom:.78}}
+
+  /* ---------- Astryx "skoolie" theme tokens, resolved from the built CSS (extends neutral, cool) ---------- */
+  .phone,[data-mode="light"]{
+    --ax-body:#F3F5F8; --ax-surface:#FFFFFF; --ax-muted:rgba(28,27,33,.05); --ax-text:#1C1B21; --ax-text-2:#474552; --ax-text-3:#918F9D;
+    --ax-border:rgba(28,27,33,.10); --ax-border-em:#918F9D; --ax-accent:#3950D3; --ax-on-accent:#FFFFFF; --ax-accent-muted:rgba(57,80,211,.10);
+    --ax-error:#B8232F; --ax-on-error:#FFFFFF; --ax-error-muted:rgba(184,35,47,.10);
+    --ax-warning:#8A5A00; --ax-on-warning:#FFFFFF; --ax-warning-muted:rgba(138,90,0,.12);
+    --ax-success:#1F6B45; --ax-on-success:#FFFFFF; --ax-success-muted:rgba(31,107,69,.12);
+    --ax-skeleton:rgba(172,169,184,.45); --ax-shadow:0 8px 24px rgba(22,26,38,.18);
+    --c-orange-bg:#fad0b5;--c-orange:#6e3500;--c-purple-bg:#eccef3;--c-purple:#700084;--c-teal-bg:#a5e3d6;--c-teal:#005348;--c-pink-bg:#fccadc;--c-pink:#83004b;--c-cyan-bg:#a3e0ef;--c-cyan:#00505f;
+    --c-orange-dot:#6e3500;--c-purple-dot:#700084;--c-teal-dot:#005348;--c-pink-dot:#83004b;--c-cyan-dot:#00505f;
+  }
+  [data-mode="dark"]{
+    --ax-body:#0F1319; --ax-surface:#181D26; --ax-muted:rgba(239,240,250,.06); --ax-text:#E1E2EB; --ax-text-2:#A8AAB9; --ax-text-3:#5C5E6B;
+    --ax-border:rgba(239,240,250,.10); --ax-border-em:#656775; --ax-accent:#B7C4FF; --ax-on-accent:#0B1230; --ax-accent-muted:rgba(183,196,255,.14);
+    --ax-error:#FF8B8B; --ax-on-error:#3A0006; --ax-error-muted:rgba(255,139,139,.14);
+    --ax-warning:#F2C14E; --ax-on-warning:#2A1B00; --ax-warning-muted:rgba(242,193,78,.14);
+    --ax-success:#6CCB94; --ax-on-success:#04240F; --ax-success-muted:rgba(108,203,148,.14);
+    --ax-skeleton:rgba(68,70,82,.7); --ax-shadow:0 8px 28px rgba(0,0,0,.6);
+    --c-orange-bg:rgba(255,162,88,.24);--c-orange:#ffc9a2;--c-purple-bg:rgba(242,151,255,.24);--c-purple:#fac1ff;--c-teal-bg:rgba(126,198,184,.24);--c-teal:#99e2d3;--c-pink-bg:rgba(255,153,195,.24);--c-pink:#ffc3da;--c-cyan-bg:rgba(131,194,212,.24);--c-cyan:#9edef0;
+    --c-orange-dot:#ffa258;--c-purple-dot:#f297ff;--c-teal-dot:#7ec6b8;--c-pink-dot:#ff99c3;--c-cyan-dot:#83c2d4;
+  }
+
+  /* ---------- phone frame ---------- */
+  .phone{width:390px;height:844px;flex:0 0 auto;border-radius:44px;background:var(--ax-body);color:var(--ax-text);font-family:var(--pg-sans);font-size:17px;line-height:1.35;
+    overflow:hidden;position:relative;box-shadow:0 0 0 10px #1b1613,0 0 0 12px #3a312c,0 30px 60px rgba(0,0,0,.35);font-variant-numeric:tabular-nums}
+  .phone.desktop{width:1180px;height:720px;border-radius:14px;box-shadow:0 0 0 1px var(--pg-line);font-size:16px}
+  .statusbar{height:52px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 4px;font-size:15px;font-weight:700}
+  .statusbar span:last-child{font-family:var(--pg-mono);font-size:12px;font-weight:500}
+
+  /* AppShell header (compact TopNav) + student rail
+     one 56px line · two groups: identity pill (start) · freshness chip + nav toggle (end) */
+  .ax-topnav{display:flex;align-items:center;justify-content:space-between;gap:12px;height:56px;padding:0 10px 0 12px;border-top:3px solid var(--student,var(--ax-accent));background:var(--ax-body)}
+  .ax-topnav .end-group{display:flex;align-items:center;gap:4px;flex:0 0 auto}
+  .ax-topnav .hamburger{width:44px;height:44px;border-radius:8px;display:grid;place-items:center;color:var(--ax-text)}
+  .ax-topnav .hamburger i{display:block;width:18px;height:2px;background:currentColor;box-shadow:0 -6px 0 currentColor,0 6px 0 currentColor;border-radius:2px}
+  .ax-avatar{width:36px;height:36px;border-radius:9999px;display:grid;place-items:center;font-weight:800;font-size:15px;flex:0 0 auto}
+  .ax-avatar.sm{width:30px;height:30px;font-size:12px}
+  .av-orange{background:var(--c-orange-bg);color:var(--c-orange)} .av-purple{background:var(--c-purple-bg);color:var(--c-purple)} .av-teal{background:var(--c-teal-bg);color:var(--c-teal)} .av-pink{background:var(--c-pink-bg);color:var(--c-pink)} .av-cyan{background:var(--c-cyan-bg);color:var(--c-cyan)}
+  .student{display:flex;align-items:center;gap:10px;min-width:0;height:44px;padding:0 10px 0 4px;border-radius:9999px}
+  .student.pill{background:var(--ax-muted)}
+  .student.pill .ax-avatar{width:32px;height:32px;font-size:14px}
+  .student b{font-weight:800;font-size:18px;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .student small{font-size:13px;color:var(--ax-text-2);display:block;line-height:1.2;margin-top:3px}
+  .student .caret{color:var(--ax-text-2);font-size:11px;margin-left:-2px;line-height:1}
+  .fresh{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:9999px;font-size:13px;font-weight:700;color:var(--ax-text-2);border:1px solid var(--ax-border);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .fresh .ax-status-dot i{width:8px;height:8px}
+  .desk-main .ax-topnav{padding:0 24px;height:64px}
+
+  /* TabList layout=fill, nav landmark */
+  .ax-tablist{display:flex;background:var(--ax-body);padding:0 6px;border-bottom:1px solid var(--ax-border);position:sticky;top:0}
+  .ax-tab{flex:1;text-align:center;padding:11px 0 12px;font-size:13.5px;font-weight:700;letter-spacing:-.01em;color:var(--ax-text-2);position:relative}
+  .ax-tab[aria-current]{color:var(--ax-accent)}
+  .ax-tab[aria-current]::after{content:"";position:absolute;left:14%;right:14%;bottom:-1px;height:3px;border-radius:3px 3px 0 0;background:var(--ax-accent)}
+
+  .content{overflow:hidden;height:calc(844px - 52px - 59px - 45px)}
+  .content.no-tabs{height:calc(844px - 52px - 59px)}
+  .ax-stack{display:flex;flex-direction:column;gap:24px;padding:18px 0 0}
+  .ax-section{display:flex;flex-direction:column;gap:6px}
+  .ax-section > h3{margin:0;padding:0 18px;font-size:14px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ax-text-2);display:flex;justify-content:space-between;align-items:baseline}
+  .ax-section > h3 .count{font-family:var(--pg-mono);font-size:12px;font-weight:500;color:var(--ax-text-3)}
+  .ax-section > h3 a{font-size:13px;font-weight:700;color:var(--ax-accent);text-transform:none;letter-spacing:0}
+  h1.page{margin:0;padding:0 18px;font-size:29px;font-weight:800;line-height:1.1}
+
+  /* List / ListItem — edge-to-edge rows with dividers */
+  .ax-list{display:flex;flex-direction:column;background:var(--ax-surface);border-top:1px solid var(--ax-border);border-bottom:1px solid var(--ax-border)}
+  .ax-list-item{display:flex;align-items:center;gap:12px;min-height:48px;padding:10px 18px;border-top:1px solid var(--ax-border)}
+  .ax-list-item:first-child{border-top:0}
+  .ax-list-item.compact{min-height:44px;padding:8px 18px}
+  .ax-list-item.spacious{padding:14px 18px}
+  .ax-list-item .main{flex:1;min-width:0}
+  .ax-list-item .title{font-weight:700;font-size:16px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ax-list-item .desc{font-size:14px;color:var(--ax-text-2);line-height:1.3;margin-top:2px}
+  .ax-list-item .end{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:0 0 auto;text-align:right}
+  .ax-list-item .end .date{font-size:13px;color:var(--ax-text-2);font-weight:600}
+  .ax-list-item .end .score{font-size:15px;font-weight:800}
+  .day-header{padding:12px 18px 4px;font-size:13px;font-weight:800;color:var(--ax-text-3);letter-spacing:.03em;background:var(--ax-body)}
+  .ax-list .day-header{border-top:1px solid var(--ax-border)}
+
+  .dot{width:10px;height:10px;border-radius:9999px;flex:0 0 auto}
+  .dot.orange{background:var(--c-orange-dot)} .dot.purple{background:var(--c-purple-dot)} .dot.teal{background:var(--c-teal-dot)} .dot.pink{background:var(--c-pink-dot)} .dot.cyan{background:var(--c-cyan-dot)}
+
+  /* Badge — only for exceptions */
+  .ax-badge{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:9999px;font-size:12px;font-weight:800;letter-spacing:.02em;white-space:nowrap}
+  .ax-badge--error{background:var(--ax-error);color:var(--ax-on-error)}
+  .ax-badge--warning{background:var(--ax-warning);color:var(--ax-on-warning)}
+  .ax-badge--neutral{background:var(--ax-muted);color:var(--ax-text-2)}
+  .ax-badge--count{background:var(--ax-accent);color:var(--ax-on-accent);height:18px;padding:0 6px;font-size:11px}
+
+  /* StatusDot — always with a label */
+  .ax-status-dot{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--ax-text-2)}
+  .ax-status-dot i{width:9px;height:9px;border-radius:9999px;display:inline-block}
+  .ax-status-dot.success i{background:var(--ax-success)} .ax-status-dot.warning i{background:var(--ax-warning)} .ax-status-dot.error i{background:var(--ax-error)} .ax-status-dot.accent i{background:var(--ax-accent)} .ax-status-dot.neutral i{background:var(--ax-text-3)}
+  .mark{width:26px;height:26px;border-radius:6px;display:grid;place-items:center;font-size:11px;font-weight:800;flex:0 0 auto;background:var(--ax-muted);color:var(--ax-text-2)}
+  .mark.test{background:var(--ax-accent-muted);color:var(--ax-accent)}
+
+  /* Card (grades tiles) — the one legitimate card use */
+  .ax-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 18px}
+  .ax-card{background:var(--ax-surface);border:1px solid var(--ax-border);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+  .ax-card .course{font-size:13px;font-weight:700;color:var(--ax-text-2);display:flex;align-items:center;gap:6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  .ax-card .avg{font-size:26px;font-weight:800;line-height:1.1}
+  .t-good{color:var(--ax-success)} .t-warn{color:var(--ax-warning)} .t-bad{color:var(--ax-error)} .t-ok{color:var(--ax-text)}
+  .delta{font-size:12px;font-weight:800}
+
+  /* Buttons */
+  .ax-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:8px;font-weight:800;font-size:16px;border:1px solid transparent}
+  .ax-button--primary{background:var(--ax-accent);color:var(--ax-on-accent)}
+  .ax-button--secondary{background:var(--ax-surface);color:var(--ax-text);border-color:var(--ax-border-em)}
+  .ax-button--ghost{background:transparent;color:var(--ax-accent)}
+  .ax-button.full{width:100%;box-sizing:border-box}
+  .ax-icon-button{width:44px;height:44px;border-radius:8px;display:grid;place-items:center;background:var(--ax-muted);color:var(--ax-text);font-size:18px;flex:0 0 auto}
+
+  /* SegmentedControl */
+  .ax-segmented{display:flex;background:var(--ax-muted);border-radius:10px;padding:3px;margin:0 18px}
+  .ax-segmented span{flex:1;text-align:center;padding:8px 0;border-radius:8px;font-size:14px;font-weight:700;color:var(--ax-text-2)}
+  .ax-segmented span[aria-checked]{background:var(--ax-surface);color:var(--ax-text);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+  .controls{display:flex;gap:10px;align-items:center;padding:0 18px}
+  .controls .ax-segmented{margin:0;flex:1}
+  .supporting{font-size:14px;color:var(--ax-text-2);padding:0 18px}
+
+  /* Banner */
+  .ax-banner{display:flex;gap:12px;align-items:flex-start;padding:12px 16px;margin:0}
+  .ax-banner--error{background:var(--ax-error-muted);color:var(--ax-text);border-bottom:1px solid var(--ax-border)}
+  .ax-banner--warning{background:var(--ax-warning-muted);color:var(--ax-text);border-bottom:1px solid var(--ax-border)}
+  .ax-banner .ico{width:22px;height:22px;border-radius:9999px;display:grid;place-items:center;font-weight:800;font-size:13px;flex:0 0 auto;color:#fff}
+  .ax-banner--error .ico{background:var(--ax-error);color:var(--ax-on-error)} .ax-banner--warning .ico{background:var(--ax-warning);color:var(--ax-on-warning)}
+  .ax-banner b{display:block;font-size:15px}
+  .ax-banner p{margin:2px 0 0;font-size:14px;color:var(--ax-text-2)}
+  .ax-banner a{color:var(--ax-accent);font-weight:800}
+
+  /* BottomSheet */
+  .scrim{position:absolute;inset:0;background:rgba(20,12,8,.45)}
+  .ax-bottom-sheet{position:absolute;left:0;right:0;bottom:0;background:var(--ax-surface);border-radius:28px 28px 0 0;box-shadow:var(--ax-shadow);display:flex;flex-direction:column;max-height:62%}
+  .ax-bottom-sheet.tall{max-height:78%}
+  .ax-bottom-sheet .grab{width:40px;height:5px;border-radius:5px;background:var(--ax-border-em);opacity:.6;margin:10px auto 6px}
+  .ax-bottom-sheet h2{margin:0;padding:6px 18px 10px;font-size:20px;font-weight:800}
+  .ax-bottom-sheet .body{overflow:hidden;flex:1}
+  .ax-bottom-sheet .foot{display:flex;gap:10px;padding:12px 18px 26px;border-top:1px solid var(--ax-border);background:var(--ax-surface)}
+  .ax-bottom-sheet .foot .ax-button{flex:1}
+  .radio{width:20px;height:20px;border-radius:9999px;border:2px solid var(--ax-border-em);flex:0 0 auto}
+  .radio.on{border-color:var(--ax-accent);box-shadow:inset 0 0 0 4px var(--ax-accent)}
+  .chiprow{display:flex;gap:8px;padding:8px 18px 12px;flex-wrap:wrap}
+  .togglechip{padding:7px 12px;border-radius:9999px;border:1px solid var(--ax-border-em);font-size:14px;font-weight:700;color:var(--ax-text)}
+  .togglechip.on{background:var(--ax-accent-muted);border-color:var(--ax-accent);color:var(--ax-accent)}
+
+  /* ProgressBar, Skeleton, EmptyState */
+  .ax-progress{height:8px;border-radius:9999px;background:var(--ax-muted);overflow:hidden}
+  .ax-progress i{display:block;height:100%;background:var(--ax-success);border-radius:9999px}
+  .ax-skeleton{background:var(--ax-skeleton);border-radius:8px;height:14px}
+  .ax-empty{display:flex;flex-direction:column;align-items:center;gap:6px;padding:26px 24px;text-align:center}
+  .ax-empty .ico{width:44px;height:44px;border-radius:12px;background:var(--ax-success-muted);color:var(--ax-success);display:grid;place-items:center;font-size:22px;font-weight:800}
+  .ax-empty b{font-size:17px;font-weight:800}
+  .ax-empty p{margin:0;font-size:14px;color:var(--ax-text-2);max-width:30ch}
+
+  .links{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:5px;font-size:13px;font-weight:800}
+  .links a{color:var(--ax-accent)} .links a.find{color:var(--ax-text-3);font-weight:700}
+
+  /* Charts — dataviz mark specs; colour: accent = emphasis, neutral = context */
+  .spark{width:72px;height:26px;flex:0 0 auto}
+  .spark path{fill:none;stroke:var(--ax-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .spark .ctx{stroke:var(--ax-text-3);opacity:.55}
+  .spark circle{fill:var(--ax-accent);stroke:var(--ax-surface);stroke-width:2}
+  .load{display:flex;align-items:flex-end;gap:6px;height:34px;padding:2px 18px 0}
+  .load div{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;font-weight:800;color:var(--ax-text-3);letter-spacing:.04em}
+  .load i{display:block;width:100%;max-width:22px;background:var(--ax-text-3);opacity:.45;border-radius:4px 4px 0 0}
+  .load .today i{background:var(--ax-accent);opacity:1} .load .today{color:var(--ax-accent)}
+  .chart{padding:6px 18px 0}
+  .chart svg{width:100%;height:auto;display:block;font-family:var(--pg-sans)}
+  .chart .grid{stroke:var(--ax-border);stroke-width:1}
+  .chart .ref{stroke:var(--ax-text-3);stroke-width:1}
+  .chart .line{fill:none;stroke:var(--ax-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .chart .wash{fill:var(--ax-accent);opacity:.10}
+  .chart .dot{fill:var(--ax-accent);stroke:var(--ax-surface);stroke-width:2}
+  .chart .xh{stroke:var(--ax-text-2);stroke-width:1}
+  .chart text{fill:var(--ax-text-2);font-size:11px;font-weight:700}
+  .chart text.end{fill:var(--ax-text);font-size:13px;font-weight:800}
+  .chart text.tick{fill:var(--ax-text-3);font-size:10px;font-weight:700}
+  .tip{position:absolute;background:var(--ax-surface);border:1px solid var(--ax-border-em);border-radius:8px;padding:8px 10px;box-shadow:var(--ax-shadow);font-size:12px;line-height:1.3;color:var(--ax-text-2)}
+  .tip b{display:block;font-size:15px;color:var(--ax-text);font-variant-numeric:tabular-nums}
+  .tip i{display:inline-block;width:12px;height:2px;background:var(--ax-accent);vertical-align:middle;margin-right:6px;border-radius:2px}
+  .meter{display:flex;flex-direction:column;gap:6px;padding:10px 18px}
+  .meter .row{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;font-weight:700}
+  .meter .row span:last-child{font-variant-numeric:tabular-nums;font-weight:800}
+  .meter .track{position:relative;height:8px;border-radius:9999px;background:var(--ax-muted)}
+  .meter .fill{position:absolute;inset:0 auto 0 0;border-radius:9999px;background:var(--ax-accent)}
+  .meter .fill.good{background:var(--ax-success)} .meter .fill.warn{background:var(--ax-warning)} .meter .fill.bad{background:var(--ax-error)}
+  .meter .mark{position:absolute;top:-4px;width:2px;height:16px;background:var(--ax-text-2);border-radius:1px}
+  .meter .marks{display:flex;justify-content:space-between;font-size:10px;font-weight:800;letter-spacing:.04em;color:var(--ax-text-3);text-transform:uppercase}
+  .stat{display:flex;flex-direction:column;gap:2px;padding:10px 18px 4px}
+  .stat .lab{font-size:13px;font-weight:700;color:var(--ax-text-2)}
+  .stat .val{font-size:40px;font-weight:800;line-height:1.05;letter-spacing:-.01em}
+  .stat .delta{font-size:13px;font-weight:800}
+  .month{padding:6px 18px}
+  .month .dow{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;font-size:10px;font-weight:800;color:var(--ax-text-3);text-align:center;letter-spacing:.04em;margin-bottom:4px}
+  .month .days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+  .month .d{height:34px;border-radius:6px;background:var(--ax-surface);border:1px solid var(--ax-border);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--ax-text-2);position:relative}
+  .month .d.off{background:transparent;border-color:transparent;color:var(--ax-text-3)}
+  .month .d.today{outline:2px solid var(--ax-accent);outline-offset:-2px;color:var(--ax-accent)}
+  .month .d em{position:absolute;bottom:3px;width:5px;height:5px;border-radius:9999px}
+  .month .d.tardy em{background:var(--ax-warning)} .month .d.absent em{background:var(--ax-error)}
+  .month .d.absent{background:var(--ax-error-muted)} .month .d.tardy{background:var(--ax-warning-muted)}
+  .legend-row{display:flex;gap:14px;padding:6px 18px 0;font-size:12px;font-weight:700;color:var(--ax-text-2)}
+  .legend-row span{display:inline-flex;align-items:center;gap:5px}
+  .legend-row i{width:9px;height:9px;border-radius:9999px;display:inline-block}
+
+  /* Motion demos — token tempos: fast 175ms · medium 410ms · ease cubic-bezier(.24,1,.4,1) */
+  .motion{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+  .mo{border:1px solid var(--pg-line);border-radius:12px;background:var(--pg-surface);padding:16px;display:flex;flex-direction:column;gap:10px;min-height:150px}
+  .mo h4{margin:0;font-size:14px;font-weight:800}
+  .mo p{margin:0;font-size:13px;color:var(--pg-ink-2)}
+  .mo .stage{border-radius:8px;padding:10px 12px;min-height:56px;display:flex;align-items:center;gap:10px;background:var(--ax-body);color:var(--ax-text);font-family:var(--pg-sans);font-size:15px;position:relative;overflow:hidden}
+  .mo .row-in{animation:slideDown 175ms cubic-bezier(.24,1,.4,1) both;animation-iteration-count:infinite;animation-duration:2.4s;animation-timing-function:steps(1)}
+  @keyframes rowIn{0%{opacity:0;transform:translateY(-8px)}7%{opacity:1;transform:none}100%{opacity:1;transform:none}}
+  @keyframes badgeIn{0%,60%{transform:scale(.6);opacity:0}67%{transform:scale(1);opacity:1}100%{transform:scale(1);opacity:1}}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(57,80,211,.45)}50%{box-shadow:0 0 0 7px rgba(57,80,211,0)}}
+  @keyframes draw{0%{stroke-dashoffset:260}20%,100%{stroke-dashoffset:0}}
+  @keyframes countUp{0%,10%{content:"84.2"}20%{content:"85.1"}30%{content:"86.0"}40%{content:"86.6"}50%,100%{content:"87.1"}}
+  .mo .row-in{animation:rowIn 2.6s cubic-bezier(.24,1,.4,1) infinite}
+  .mo .badge-in{animation:badgeIn 2.6s cubic-bezier(.24,1,.4,1) infinite}
+  .mo .pulse{animation:pulse 1.6s ease-out infinite}
+  .mo .draw{stroke-dasharray:260;animation:draw 3s cubic-bezier(.24,1,.4,1) infinite}
+  .mo .count::after{content:"84.2";font-size:28px;font-weight:800;animation:countUp 2.6s steps(1) infinite;font-variant-numeric:tabular-nums}
+  @media (prefers-reduced-motion: reduce){.mo .row-in,.mo .badge-in,.mo .pulse,.mo .draw,.mo .count::after{animation:none}.mo .draw{stroke-dashoffset:0}.mo .count::after{content:"87.1"}}
+
+  /* Desktop shell */
+  .desk{display:grid;grid-template-columns:240px 1fr;height:100%}
+  .ax-sidenav{background:var(--ax-body);border-right:1px solid var(--ax-border);padding:14px 10px;display:flex;flex-direction:column;gap:2px}
+  .ax-sidenav .brand{font-weight:800;font-size:20px;padding:6px 10px 14px;color:var(--ax-accent)}
+  .ax-sidenav .sec{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ax-text-3);padding:12px 10px 4px}
+  .ax-sidenav-item{padding:8px 10px;border-radius:8px;font-weight:700;font-size:15px;color:var(--ax-text-2)}
+  .ax-sidenav-item[aria-current]{background:var(--ax-accent-muted);color:var(--ax-accent)}
+  .desk-main{display:flex;flex-direction:column;overflow:hidden}
+  .desk-main .ax-topnav{border-top-width:3px;padding:10px 24px}
+  .desk-cols{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;padding:8px 24px 0;overflow:hidden}
+  .desk-cols .ax-stack{padding-top:8px}
+  .desk-cols .ax-list{border-radius:12px;border:1px solid var(--ax-border)}
+  .desk-cols .ax-grid{padding:0;grid-template-columns:1fr 1fr}
+  .desk-cols .ax-section>h3{padding:0}
+  .desk-cols .ax-list-item{padding-left:14px;padding-right:14px}
+
+  /* token strip */
+  .tokens{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:16px}
+  .tok{border:1px solid var(--pg-line);border-radius:10px;overflow:hidden;background:var(--pg-surface)}
+  .tok .sw{height:44px;display:flex}
+  .tok .sw i{flex:1}
+  .tok .nm{font-family:var(--pg-mono);font-size:11px;padding:8px 10px;color:var(--pg-ink)}
+  .tok .nm small{display:block;color:var(--pg-ink-2);margin-top:2px}
+  .legend{border-top:1px solid var(--pg-line);padding:36px 0 0;margin-top:12px}
+  .legend table{border-collapse:collapse;width:100%;font-size:14px}
+  .legend th,.legend td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--pg-line);vertical-align:top}
+  .legend th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--pg-ink-2)}
+  .legend code{font-family:var(--pg-mono);font-size:12px}
+  .strip{display:flex;gap:24px;flex-wrap:wrap;overflow-x:auto}
+  .mini{width:390px;flex:0 0 auto;border-radius:20px;overflow:hidden;background:var(--ax-body);color:var(--ax-text);font-family:var(--pg-sans);box-shadow:0 0 0 1px var(--ax-border)}
+  @media (prefers-reduced-motion: no-preference){ .ax-skeleton{animation:sh 1.4s ease-in-out infinite} @keyframes sh{50%{opacity:.5}} }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Skoolie on Astryx</h1>
+    <p class="lede">Mockups for rebuilding the family school dashboard on Meta's Astryx design system: mobile-first, dark mode from day one, a paper-and-ink palette — fountain-pen blue as the one accent — and one warm categorical hue per kid. Every element below is named for the Astryx component that will render it.</p>
+    <div class="meta"><span>theme <b>skoolie</b> · extends <b>neutral</b> (cool)</span><span>astryx <b>0.5.0</b></span><span>type <b>Nunito 17 / 1.2</b></span><span>accent <b>#3950D3 · #B7C4FF</b></span><span>frames <b>390 × 844</b></span></div>
+  </header>
+
+  <!-- ============ 1. HOME ============ -->
+  <section class="screen">
+    <div class="about">
+      <span class="route">/s/robin</span>
+      <h2>Home</h2>
+      <p>Answers one question in three seconds: does this kid need something from me today? Only actionable or new things live here; everything else is one tab away. The week gets a seven-column load strip (today in the accent) and the grade tiles become stat tiles with a sparkline.</p>
+      <div class="chips"><span class="chip">Load strip · single hue + emphasis</span><span class="chip">Stat tile · value + sparkline</span><span class="chip">AppShell</span><span class="chip">TopNav</span><span class="chip">TabList fill</span><span class="chip">Section</span><span class="chip">List · ListItem</span><span class="chip">Badge error/warning</span><span class="chip">StatusDot</span><span class="chip">Card muted</span><span class="chip">Collapsible</span></div>
+    </div>
+    <div class="frames">
+      <div class="frame-wrap"><span class="frame-label">Light · system</span>
+      <div class="phone" data-mode="light" style="--student:var(--c-orange-dot)">
+        <div class="statusbar"><span>9:41</span><span>●●● ᯤ ▮</span></div>
+        <div class="ax-topnav"><div class="student pill"><span class="ax-avatar av-orange">R</span><b>Robin</b><span class="caret">▾</span></div><div class="end-group"><span class="fresh"><span class="ax-status-dot success"><i></i></span>Fresh · 12m</span><span class="hamburger"><i></i></span></div></div>
+        <nav class="ax-tablist"><span class="ax-tab" aria-current="page">Home</span><span class="ax-tab">Assignments</span><span class="ax-tab">Grades</span><span class="ax-tab">Activity</span><span class="ax-tab">Teachers</span></nav>
+        <div class="content"><div class="ax-stack">
+          <div class="ax-section"><h3>Needs attention <span class="count">2</span></h3>
+            <div class="ax-list">
+              <div class="ax-list-item"><div class="main"><div class="title">Ch. 4 vocabulary quiz retake</div><div class="desc">Spanish I · Assessment</div></div><div class="end"><span class="ax-badge ax-badge--error">Missing</span><span class="date">Tue 8/25</span></div></div>
+              <div class="ax-list-item"><div class="main"><div class="title">Lab report: density of unknowns</div><div class="desc">Science · Homework</div></div><div class="end"><span class="ax-badge ax-badge--warning">Due today</span><span class="date">Thu 8/27</span></div></div>
+            </div></div>
+          <div class="ax-section"><h3>This week</h3>
+            <div class="load"><div><i style="height:10px"></i>M</div><div><i style="height:18px"></i>T</div><div><i style="height:6px"></i>W</div><div class="today"><i style="height:26px"></i>T</div><div><i style="height:22px"></i>F</div><div><i style="height:0"></i>S</div><div><i style="height:0"></i>S</div></div>
+            <div class="ax-list">
+              <div class="day-header">FRI 8/28</div>
+              <div class="ax-list-item compact"><span class="mark test">T</span><div class="main"><div class="title">Unit 1 test — integers &amp; rationals</div><div class="desc">Math 7 · Assessment</div></div><div class="end"><span class="date">Fri</span></div></div>
+              <div class="ax-list-item compact"><span class="mark">HW</span><div class="main"><div class="title">Read ch. 3, answer 1–8</div><div class="desc">Texas History</div></div><div class="end"><span class="date">Fri</span></div></div>
+              <div class="day-header">MON 8/31</div>
+              <div class="ax-list-item compact"><span class="mark">HW</span><div class="main"><div class="title">Personal narrative draft 1</div><div class="desc">ELA 7 · Project</div></div><div class="end"><span class="date">Mon</span></div></div>
+            </div></div>
+          <div class="ax-section"><h3>Grades <a>All grades</a></h3>
+            <div class="ax-grid">
+              <div class="ax-card"><span class="course"><span class="dot teal"></span>Math 7</span><div style="display:flex;justify-content:space-between;align-items:flex-end"><span class="avg t-good">93.4</span><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 18 L12 16 L22 17 L32 14 L42 15 L52 11"/><path d="M52 11 L62 8 L70 6"/><circle cx="70" cy="6" r="4"/></svg></div></div>
+              <div class="ax-card"><span class="course"><span class="dot purple"></span>Science</span><div style="display:flex;justify-content:space-between;align-items:flex-end"><span class="avg t-ok">87.1</span><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 18 L12 16 L22 17 L32 14 L42 15 L52 11"/><path d="M52 11 L62 8 L70 6"/><circle cx="70" cy="6" r="4"/></svg></div></div>
+              <div class="ax-card"><span class="course"><span class="dot pink"></span>Spanish I</span><div style="display:flex;justify-content:space-between;align-items:flex-end"><span class="avg t-warn">76.8</span><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 8 L12 9 L22 7 L32 10 L42 9 L52 12"/><path d="M52 12 L62 16 L70 19"/><circle cx="70" cy="19" r="4"/></svg></div></div>
+              <div class="ax-card"><span class="course"><span class="dot cyan"></span>ELA 7</span><div style="display:flex;justify-content:space-between;align-items:flex-end"><span class="avg t-good">91.0</span><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 12 L12 13 L22 11 L32 12 L42 12 L52 11"/><path d="M52 11 L62 11 L70 12"/><circle cx="70" cy="12" r="4"/></svg></div></div>
+            </div></div>
+          <div class="ax-section"><h3>What changed <a>See all</a></h3>
+            <div class="ax-list">
+              <div class="ax-list-item compact"><div class="main"><div class="title">Quiz 3 graded · 18/20</div><div class="desc">Math 7 · 2h ago</div></div></div>
+              <div class="ax-list-item compact"><div class="main"><div class="title">Science average 84.2 → 87.1</div><div class="desc">Yesterday</div></div></div>
+            </div></div>
+        </div></div>
+      </div></div>
+
+      <div class="frame-wrap"><span class="frame-label">Dark · explicit</span>
+      <div class="phone" data-mode="dark" style="--student:var(--c-orange-dot)">
+        <div class="statusbar"><span>9:41</span><span>●●● ᯤ ▮</span></div>
+        <div class="ax-topnav"><div class="student pill"><span class="ax-avatar av-orange">R</span><b>Robin</b><span class="caret">▾</span></div><div class="end-group"><span class="fresh"><span class="ax-status-dot success"><i></i></span>Fresh · 12m</span><span class="hamburger"><i></i></span></div></div>
+        <nav class="ax-tablist"><span class="ax-tab" aria-current="page">Home</span><span class="ax-tab">Assignments</span><span class="ax-tab">Grades</span><span class="ax-tab">Activity</span><span class="ax-tab">Teachers</span></nav>
+        <div class="content"><div class="ax-stack">
+          <div class="ax-section"><h3>Needs attention <span class="count">2</span></h3>
+            <div class="ax-list">
+              <div class="ax-list-item"><div class="main"><div class="title">Ch. 4 vocabulary quiz retake</div><div class="desc">Spanish I · Assessment</div></div><div class="end"><span class="ax-badge ax-badge--error">Missing</span><span class="date">Tue 8/25</span></div></div>
+              <div class="ax-list-item"><div class="main"><div class="title">Lab report: density of unknowns</div><div class="desc">Science · Homework</div></div><div class="end"><span class="ax-badge ax-badge--warning">Due today</span><span class="date">Thu 8/27</span></div></div>
+            </div></div>
+          <div class="ax-section"><h3>This week</h3>
+            <div class="load"><div><i style="height:10px"></i>M</div><div><i style="height:18px"></i>T</div><div><i style="height:6px"></i>W</div><div class="today"><i style="height:26px"></i>T</div><div><i style="height:22px"></i>F</div><div><i style="height:0"></i>S</div><div><i style="height:0"></i>S</div></div>
+            <div class="ax-list">
+              <div class="day-header">FRI 8/28</div>
+              <div class="ax-list-item compact"><span class="mark test">T</span><div class="main"><div class="title">Unit 1 test — integers &amp; rationals</div><div class="desc">Math 7 · Assessment</div></div><div class="end"><span class="date">Fri</span></div></div>
+              <div class="ax-list-item compact"><span class="mark">HW</span><div class="main"><div class="title">Read ch. 3, answer 1–8</div><div class="desc">Texas History</div></div><div class="end"><span class="date">Fri</span></div></div>
+              <div class="day-header">MON 8/31</div>
+              <div class="ax-list-item compact"><span class="mark">HW</span><div class="main"><div class="title">Personal narrative draft 1</div><div class="desc">ELA 7 · Project</div></div><div class="end"><span class="date">Mon</span></div></div>
+            </div></div>
+          <div class="ax-section"><h3>Grades <a>All grades</a></h3>
+            <div class="ax-grid">
+              <div class="ax-card"><span class="course"><span class="dot teal"></span>Math 7</span><div style="display:flex;justify-content:space-between;align-items:flex-end"><span class="avg t-good">93.4</span><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 18 L12 16 L22 17 L32 14 L42 15 L52 11"/><path d="M52 11 L62 8 L70 6"/><circle cx="70" cy="6" r="4"/></svg></div></div>
+              <div class="ax-card"><span class="course"><span class="dot purple"></span>Science</span><div style="display:flex;justify-content:space-between;align-items:flex-end"><span class="avg t-ok">87.1</span><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 18 L12 16 L22 17 L32 14 L42 15 L52 11"/><path d="M52 11 L62 8 L70 6"/><circle cx="70" cy="6" r="4"/></svg></div></div>
+              <div class="ax-card"><span class="course"><span class="dot pink"></span>Spanish I</span><div style="display:flex;justify-content:space-between;align-items:flex-end"><span class="avg t-warn">76.8</span><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 8 L12 9 L22 7 L32 10 L42 9 L52 12"/><path d="M52 12 L62 16 L70 19"/><circle cx="70" cy="19" r="4"/></svg></div></div>
+              <div class="ax-card"><span class="course"><span class="dot cyan"></span>ELA 7</span><div style="display:flex;justify-content:space-between;align-items:flex-end"><span class="avg t-good">91.0</span><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 12 L12 13 L22 11 L32 12 L42 12 L52 11"/><path d="M52 11 L62 11 L70 12"/><circle cx="70" cy="12" r="4"/></svg></div></div>
+            </div></div>
+          <div class="ax-section"><h3>What changed <a>See all</a></h3>
+            <div class="ax-list">
+              <div class="ax-list-item compact"><div class="main"><div class="title">Quiz 3 graded · 18/20</div><div class="desc">Math 7 · 2h ago</div></div></div>
+              <div class="ax-list-item compact"><div class="main"><div class="title">Science average 84.2 → 87.1</div><div class="desc">Yesterday</div></div></div>
+            </div></div>
+        </div></div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- ============ 2. ASSIGNMENTS + FILTER SHEET ============ -->
+  <section class="screen">
+    <div class="about">
+      <span class="route">/s/robin/assignments?status=open</span>
+      <h2>Assignments</h2>
+      <p>A segmented status control replaces three native selects; deeper filters rise in a form bottom sheet with the primary action pinned above the keyboard line. Rows stay dense; only Missing and Late earn a badge.</p>
+      <div class="chips"><span class="chip">SegmentedControl</span><span class="chip">Button + Badge count</span><span class="chip">List compact</span><span class="chip">Timestamp date_weekday</span><span class="chip">BottomSheet form · capped</span><span class="chip">ToggleButtonGroup</span></div>
+    </div>
+    <div class="frames">
+      <div class="frame-wrap"><span class="frame-label">Light · list</span>
+      <div class="phone" data-mode="light" style="--student:var(--c-orange-dot)">
+        <div class="statusbar"><span>9:41</span><span>●●● ᯤ ▮</span></div>
+        <div class="ax-topnav"><div class="student pill"><span class="ax-avatar av-orange">R</span><b>Robin</b><span class="caret">▾</span></div><div class="end-group"><span class="fresh"><span class="ax-status-dot success"><i></i></span>Fresh · 12m</span><span class="hamburger"><i></i></span></div></div>
+        <nav class="ax-tablist"><span class="ax-tab">Home</span><span class="ax-tab" aria-current="page">Assignments</span><span class="ax-tab">Grades</span><span class="ax-tab">Activity</span><span class="ax-tab">Teachers</span></nav>
+        <div class="content"><div class="ax-stack" style="gap:12px">
+          <div class="controls"><div class="ax-segmented"><span>All</span><span aria-checked="true">Open</span><span>Missing</span><span>Graded</span></div><span class="ax-button ax-button--secondary" style="min-height:40px;padding:0 12px;font-size:14px">Filters <span class="ax-badge ax-badge--count">1</span></span></div>
+          <div class="supporting">14 of 61 · Science only</div>
+          <div class="ax-list">
+            <div class="day-header">THIS WEEK</div>
+            <div class="ax-list-item compact"><div class="main"><div class="title">Lab report: density of unknowns</div><div class="desc">Science · Homework</div></div><div class="end"><span class="ax-badge ax-badge--warning">Due today</span></div></div>
+            <div class="ax-list-item compact"><div class="main"><div class="title">Periodic table scavenger hunt</div><div class="desc">Science · Classwork</div></div><div class="end"><span class="date">Fri 8/28</span><span class="score" style="color:var(--ax-text-2);font-weight:600">Upcoming</span></div></div>
+            <div class="day-header">NEXT WEEK</div>
+            <div class="ax-list-item compact"><span class="mark test">T</span><div class="main"><div class="title">Unit 1 test — matter &amp; energy</div><div class="desc">Science · Assessment</div></div><div class="end"><span class="date">Wed 9/2</span></div></div>
+            <div class="ax-list-item compact"><div class="main"><div class="title">Safety contract signed by parent</div><div class="desc">Science · Other</div></div><div class="end"><span class="date">Thu 9/3</span></div></div>
+            <div class="day-header">EARLIER</div>
+            <div class="ax-list-item compact"><div class="main"><div class="title">Measurement practice ws</div><div class="desc">Science · Classwork</div></div><div class="end"><span class="ax-badge ax-badge--error">Late</span><span class="date">Mon 8/24</span></div></div>
+            <div class="ax-list-item compact"><div class="main"><div class="title">Lab safety quiz</div><div class="desc">Science · Assessment</div></div><div class="end"><span class="date">Fri 8/21</span><span class="score">19/20</span></div></div>
+            <div class="ax-list-item compact"><div class="main"><div class="title">Metric conversions</div><div class="desc">Science · Homework</div></div><div class="end"><span class="date">Wed 8/19</span><span class="score">10/10</span></div></div>
+          </div>
+        </div></div>
+      </div></div>
+
+      <div class="frame-wrap"><span class="frame-label">Dark · filter sheet open</span>
+      <div class="phone" data-mode="dark" style="--student:var(--c-orange-dot)">
+        <div class="statusbar"><span>9:41</span><span>●●● ᯤ ▮</span></div>
+        <div class="ax-topnav"><div class="student pill"><span class="ax-avatar av-orange">R</span><b>Robin</b><span class="caret">▾</span></div><div class="end-group"><span class="fresh"><span class="ax-status-dot success"><i></i></span>Fresh · 12m</span><span class="hamburger"><i></i></span></div></div>
+        <nav class="ax-tablist"><span class="ax-tab">Home</span><span class="ax-tab" aria-current="page">Assignments</span><span class="ax-tab">Grades</span><span class="ax-tab">Activity</span><span class="ax-tab">Teachers</span></nav>
+        <div class="content"><div class="ax-stack" style="gap:12px">
+          <div class="controls"><div class="ax-segmented"><span>All</span><span aria-checked="true">Open</span><span>Missing</span><span>Graded</span></div><span class="ax-button ax-button--secondary" style="min-height:40px;padding:0 12px;font-size:14px">Filters</span></div>
+          <div class="supporting">38 of 61</div>
+          <div class="ax-list">
+            <div class="day-header">THIS WEEK</div>
+            <div class="ax-list-item compact"><div class="main"><div class="title">Lab report: density of unknowns</div><div class="desc">Science · Homework</div></div><div class="end"><span class="ax-badge ax-badge--warning">Due today</span></div></div>
+            <div class="ax-list-item compact"><span class="mark test">T</span><div class="main"><div class="title">Unit 1 test — integers &amp; rationals</div><div class="desc">Math 7 · Assessment</div></div><div class="end"><span class="date">Fri 8/28</span></div></div>
+            <div class="ax-list-item compact"><div class="main"><div class="title">Read ch. 3, answer 1–8</div><div class="desc">Texas History · Homework</div></div><div class="end"><span class="date">Fri 8/28</span></div></div>
+          </div>
+        </div></div>
+        <div class="scrim"></div>
+        <div class="ax-bottom-sheet tall" role="dialog" aria-label="Filters">
+          <div class="grab"></div><h2>Filters</h2>
+          <div class="body">
+            <div class="day-header" style="background:transparent">COURSE</div>
+            <div class="ax-list" style="border-top:0">
+              <div class="ax-list-item compact"><span class="radio on"></span><div class="main"><div class="title">All courses</div></div></div>
+              <div class="ax-list-item compact"><span class="radio"></span><span class="dot teal"></span><div class="main"><div class="title">Math 7</div><div class="desc">P1 · Ms. Okafor</div></div></div>
+              <div class="ax-list-item compact"><span class="radio"></span><span class="dot purple"></span><div class="main"><div class="title">Science</div><div class="desc">P3 · Mr. Duarte</div></div></div>
+              <div class="ax-list-item compact"><span class="radio"></span><span class="dot pink"></span><div class="main"><div class="title">Spanish I</div><div class="desc">P5 · Sra. Villanueva</div></div></div>
+            </div>
+            <div class="day-header" style="background:transparent">KIND</div>
+            <div class="chiprow"><span class="togglechip on">Homework</span><span class="togglechip on">Assessment</span><span class="togglechip">Classwork</span><span class="togglechip on">Project</span><span class="togglechip">Other</span></div>
+          </div>
+          <div class="foot"><span class="ax-button ax-button--secondary">Reset</span><span class="ax-button ax-button--primary">Show 38 results</span></div>
+        </div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- ============ 3. DETAIL SHEET ============ -->
+  <section class="screen">
+    <div class="about">
+      <span class="route">/s/robin/assignments/hac-88214</span>
+      <h2>Assignment detail</h2>
+      <p>Deep-linkable. An info sheet with two snap points on the phone, a Dialog on desktop. Facts as a list, the score as a progress bar, and the two actions a parent actually takes.</p>
+      <div class="chips"><span class="chip">BottomSheet info · snapPoints [0.5, 0.92]</span><span class="chip">Heading 2</span><span class="chip">List</span><span class="chip">ProgressBar</span><span class="chip">Timestamp</span><span class="chip">Button primary / secondary</span></div>
+    </div>
+    <div class="frames">
+      <div class="frame-wrap"><span class="frame-label">Light</span>
+      <div class="phone" data-mode="light" style="--student:var(--c-orange-dot)">
+        <div class="statusbar"><span>9:41</span><span>●●● ᯤ ▮</span></div>
+        <div class="ax-topnav"><div class="student pill"><span class="ax-avatar av-orange">R</span><b>Robin</b><span class="caret">▾</span></div><div class="end-group"><span class="fresh"><span class="ax-status-dot success"><i></i></span>Fresh · 12m</span><span class="hamburger"><i></i></span></div></div>
+        <nav class="ax-tablist"><span class="ax-tab">Home</span><span class="ax-tab" aria-current="page">Assignments</span><span class="ax-tab">Grades</span><span class="ax-tab">Activity</span><span class="ax-tab">Teachers</span></nav>
+        <div class="content"><div class="ax-stack" style="gap:12px">
+          <div class="controls"><div class="ax-segmented"><span>All</span><span>Open</span><span>Missing</span><span aria-checked="true">Graded</span></div></div>
+          <div class="ax-list"><div class="ax-list-item compact"><div class="main"><div class="title">Quiz 3 — order of operations</div><div class="desc">Math 7 · Assessment</div></div><div class="end"><span class="date">Tue 8/25</span><span class="score">18/20</span></div></div></div>
+        </div></div>
+        <div class="scrim"></div>
+        <div class="ax-bottom-sheet tall" role="dialog" aria-label="Quiz 3 — order of operations">
+          <div class="grab"></div>
+          <h2 style="font-size:22px;line-height:1.15">Quiz 3 — order of operations</h2>
+          <div class="body">
+            <div class="ax-list-item compact" style="padding-top:0"><span class="dot teal"></span><div class="main"><div class="desc" style="margin:0">Math 7 · P1 · Ms. Okafor</div></div></div>
+            <div style="padding:6px 18px 14px"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px"><span style="font-weight:800;font-size:15px">Score</span><span style="font-weight:800;font-size:22px" class="t-good">18 / 20 · 90%</span></div><div class="ax-progress"><i style="width:90%"></i></div></div>
+            <div class="ax-list" style="border-bottom:0">
+              <div class="ax-list-item compact"><div class="main"><div class="desc" style="margin:0">Due</div></div><div class="end"><span class="score" style="font-weight:700">Tue, Aug 25</span></div></div>
+              <div class="ax-list-item compact"><div class="main"><div class="desc" style="margin:0">Status</div></div><div class="end"><span class="score" style="font-weight:700">Graded</span></div></div>
+              <div class="ax-list-item compact"><div class="main"><div class="desc" style="margin:0">Category · weight</div></div><div class="end"><span class="score" style="font-weight:700">Assessment · 40%</span></div></div>
+              <div class="ax-list-item compact"><div class="main"><div class="desc" style="margin:0">First seen · last seen</div></div><div class="end"><span class="score" style="font-weight:700">Aug 18 · 2h ago</span></div></div>
+            </div>
+          </div>
+          <div class="foot"><span class="ax-button ax-button--secondary">Open in HAC</span><span class="ax-button ax-button--primary">Email Ms. Okafor</span></div>
+        </div>
+      </div></div>
+      <div class="frame-wrap"><span class="frame-label">Dark · half snap</span>
+      <div class="phone" data-mode="dark" style="--student:var(--c-orange-dot)">
+        <div class="statusbar"><span>9:41</span><span>●●● ᯤ ▮</span></div>
+        <div class="ax-topnav"><div class="student pill"><span class="ax-avatar av-orange">R</span><b>Robin</b><span class="caret">▾</span></div><div class="end-group"><span class="fresh"><span class="ax-status-dot success"><i></i></span>Fresh · 12m</span><span class="hamburger"><i></i></span></div></div>
+        <nav class="ax-tablist"><span class="ax-tab">Home</span><span class="ax-tab" aria-current="page">Assignments</span><span class="ax-tab">Grades</span><span class="ax-tab">Activity</span><span class="ax-tab">Teachers</span></nav>
+        <div class="content"><div class="ax-stack" style="gap:12px">
+          <div class="controls"><div class="ax-segmented"><span>All</span><span aria-checked="true">Open</span><span>Missing</span><span>Graded</span></div></div>
+          <div class="ax-list">
+            <div class="day-header">THIS WEEK</div>
+            <div class="ax-list-item compact"><div class="main"><div class="title">Ch. 4 vocabulary quiz retake</div><div class="desc">Spanish I · Assessment</div></div><div class="end"><span class="ax-badge ax-badge--error">Missing</span></div></div>
+            <div class="ax-list-item compact"><div class="main"><div class="title">Lab report: density of unknowns</div><div class="desc">Science · Homework</div></div><div class="end"><span class="ax-badge ax-badge--warning">Due today</span></div></div>
+            <div class="ax-list-item compact"><span class="mark test">T</span><div class="main"><div class="title">Unit 1 test — integers &amp; rationals</div><div class="desc">Math 7</div></div><div class="end"><span class="date">Fri 8/28</span></div></div>
+          </div>
+        </div></div>
+        <div class="scrim"></div>
+        <div class="ax-bottom-sheet" role="dialog" aria-label="Ch. 4 vocabulary quiz retake" style="max-height:50%">
+          <div class="grab"></div>
+          <h2 style="font-size:22px;line-height:1.15">Ch. 4 vocabulary quiz retake</h2>
+          <div class="body">
+            <div class="ax-list-item compact" style="padding-top:0"><span class="dot pink"></span><div class="main"><div class="desc" style="margin:0">Spanish I · P5 · Sra. Villanueva</div></div><div class="end"><span class="ax-badge ax-badge--error">Missing</span></div></div>
+            <div class="ax-list" style="border-bottom:0">
+              <div class="ax-list-item compact"><div class="main"><div class="desc" style="margin:0">Due</div></div><div class="end"><span class="score" style="font-weight:700">Tue, Aug 25 · 2 days ago</span></div></div>
+              <div class="ax-list-item compact"><div class="main"><div class="desc" style="margin:0">Category</div></div><div class="end"><span class="score" style="font-weight:700">Assessment</span></div></div>
+            </div>
+          </div>
+          <div class="foot"><span class="ax-button ax-button--secondary">Open in HAC</span><span class="ax-button ax-button--primary">Email Sra. Villanueva</span></div>
+        </div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- ============ 4. GRADES ============ -->
+  <section class="screen">
+    <div class="about">
+      <span class="route">/s/robin/grades</span>
+      <h2>Grades</h2>
+      <p>One spacious row per course in period order. The average is the lead element; the delta comes from the latest <code style="font-family:var(--pg-mono);font-size:13px">average_changed</code> event. Each row carries a 12-point sparkline — a small multiple, so courses are compared side by side without a five-line chart. Tapping a row opens the course detail.</p>
+      <div class="chips"><span class="chip">List spacious</span><span class="chip">Heading 4</span><span class="chip">gradeTone()</span><span class="chip">Sparkline · recharts, no animation</span></div>
+    </div>
+    <div class="frames">
+      <div class="frame-wrap"><span class="frame-label">Light</span>
+      <div class="phone" data-mode="light" style="--student:var(--c-orange-dot)">
+        <div class="statusbar"><span>9:41</span><span>●●● ᯤ ▮</span></div>
+        <div class="ax-topnav"><div class="student pill"><span class="ax-avatar av-orange">R</span><b>Robin</b><span class="caret">▾</span></div><div class="end-group"><span class="fresh"><span class="ax-status-dot success"><i></i></span>Fresh · 12m</span><span class="hamburger"><i></i></span></div></div>
+        <nav class="ax-tablist"><span class="ax-tab">Home</span><span class="ax-tab">Assignments</span><span class="ax-tab" aria-current="page">Grades</span><span class="ax-tab">Activity</span><span class="ax-tab">Teachers</span></nav>
+        <div class="content"><div class="ax-stack">
+          <div class="ax-section"><h3>Marking period 1 <span class="count">Aug 12 – Oct 9</span></h3>
+            <div class="ax-list">
+              <div class="ax-list-item spacious"><span class="dot teal"></span><div class="main"><div class="title">Math 7</div><div class="desc">P1 · Ms. Okafor · 14 graded</div></div><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 18 L12 16 L22 17 L32 14 L42 15 L52 11"/><path d="M52 11 L62 8 L70 6"/><circle cx="70" cy="6" r="4"/></svg><div class="end"><span class="avg t-good" style="font-size:24px;font-weight:800">93.4</span><span class="delta t-good">▲ 1.2</span></div></div>
+              <div class="ax-list-item spacious"><span class="dot cyan"></span><div class="main"><div class="title">ELA 7</div><div class="desc">P2 · Mr. Okonkwo · 9 graded</div></div><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 12 L12 13 L22 11 L32 12 L42 12 L52 11"/><path d="M52 11 L62 11 L70 12"/><circle cx="70" cy="12" r="4"/></svg><div class="end"><span class="avg t-good" style="font-size:24px;font-weight:800">91.0</span><span class="delta" style="color:var(--ax-text-3)">—</span></div></div>
+              <div class="ax-list-item spacious"><span class="dot purple"></span><div class="main"><div class="title">Science</div><div class="desc">P3 · Mr. Duarte · 11 graded</div></div><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 18 L12 16 L22 17 L32 14 L42 15 L52 11"/><path d="M52 11 L62 8 L70 6"/><circle cx="70" cy="6" r="4"/></svg><div class="end"><span class="avg t-ok" style="font-size:24px;font-weight:800">87.1</span><span class="delta t-good">▲ 2.9</span></div></div>
+              <div class="ax-list-item spacious"><span class="dot orange"></span><div class="main"><div class="title">Texas History</div><div class="desc">P4 · Mrs. Pruitt · 7 graded</div></div><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 8 L12 9 L22 7 L32 10 L42 9 L52 12"/><path d="M52 12 L62 16 L70 19"/><circle cx="70" cy="19" r="4"/></svg><div class="end"><span class="avg t-ok" style="font-size:24px;font-weight:800">84.5</span><span class="delta t-bad">▼ 0.8</span></div></div>
+              <div class="ax-list-item spacious"><span class="dot pink"></span><div class="main"><div class="title">Spanish I</div><div class="desc">P5 · Sra. Villanueva · 12 graded</div></div><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 8 L12 9 L22 7 L32 10 L42 9 L52 12"/><path d="M52 12 L62 16 L70 19"/><circle cx="70" cy="19" r="4"/></svg><div class="end"><span class="avg t-warn" style="font-size:24px;font-weight:800">76.8</span><span class="delta t-bad">▼ 4.1</span></div></div>
+              <div class="ax-list-item spacious"><span class="dot teal"></span><div class="main"><div class="title">Art</div><div class="desc">P6 · Ms. Cho · 3 graded</div></div><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 12 L12 13 L22 11 L32 12 L42 12 L52 11"/><path d="M52 11 L62 11 L70 12"/><circle cx="70" cy="12" r="4"/></svg><div class="end"><span class="avg t-good" style="font-size:24px;font-weight:800">98.0</span><span class="delta" style="color:var(--ax-text-3)">—</span></div></div>
+            </div></div>
+        </div></div>
+      </div></div>
+      <div class="frame-wrap"><span class="frame-label">Dark</span>
+      <div class="phone" data-mode="dark" style="--student:var(--c-orange-dot)">
+        <div class="statusbar"><span>9:41</span><span>●●● ᯤ ▮</span></div>
+        <div class="ax-topnav"><div class="student pill"><span class="ax-avatar av-orange">R</span><b>Robin</b><span class="caret">▾</span></div><div class="end-group"><span class="fresh"><span class="ax-status-dot success"><i></i></span>Fresh · 12m</span><span class="hamburger"><i></i></span></div></div>
+        <nav class="ax-tablist"><span class="ax-tab">Home</span><span class="ax-tab">Assignments</span><span class="ax-tab" aria-current="page">Grades</span><span class="ax-tab">Activity</span><span class="ax-tab">Teachers</span></nav>
+        <div class="content"><div class="ax-stack">
+          <div class="ax-section"><h3>Marking period 1 <span class="count">Aug 12 – Oct 9</span></h3>
+            <div class="ax-list">
+              <div class="ax-list-item spacious"><span class="dot teal"></span><div class="main"><div class="title">Math 7</div><div class="desc">P1 · Ms. Okafor · 14 graded</div></div><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 18 L12 16 L22 17 L32 14 L42 15 L52 11"/><path d="M52 11 L62 8 L70 6"/><circle cx="70" cy="6" r="4"/></svg><div class="end"><span class="avg t-good" style="font-size:24px;font-weight:800">93.4</span><span class="delta t-good">▲ 1.2</span></div></div>
+              <div class="ax-list-item spacious"><span class="dot cyan"></span><div class="main"><div class="title">ELA 7</div><div class="desc">P2 · Mr. Okonkwo · 9 graded</div></div><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 12 L12 13 L22 11 L32 12 L42 12 L52 11"/><path d="M52 11 L62 11 L70 12"/><circle cx="70" cy="12" r="4"/></svg><div class="end"><span class="avg t-good" style="font-size:24px;font-weight:800">91.0</span><span class="delta" style="color:var(--ax-text-3)">—</span></div></div>
+              <div class="ax-list-item spacious"><span class="dot purple"></span><div class="main"><div class="title">Science</div><div class="desc">P3 · Mr. Duarte · 11 graded</div></div><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 18 L12 16 L22 17 L32 14 L42 15 L52 11"/><path d="M52 11 L62 8 L70 6"/><circle cx="70" cy="6" r="4"/></svg><div class="end"><span class="avg t-ok" style="font-size:24px;font-weight:800">87.1</span><span class="delta t-good">▲ 2.9</span></div></div>
+              <div class="ax-list-item spacious"><span class="dot orange"></span><div class="main"><div class="title">Texas History</div><div class="desc">P4 · Mrs. Pruitt · 7 graded</div></div><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 8 L12 9 L22 7 L32 10 L42 9 L52 12"/><path d="M52 12 L62 16 L70 19"/><circle cx="70" cy="19" r="4"/></svg><div class="end"><span class="avg t-ok" style="font-size:24px;font-weight:800">84.5</span><span class="delta t-bad">▼ 0.8</span></div></div>
+              <div class="ax-list-item spacious"><span class="dot pink"></span><div class="main"><div class="title">Spanish I</div><div class="desc">P5 · Sra. Villanueva · 12 graded</div></div><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 8 L12 9 L22 7 L32 10 L42 9 L52 12"/><path d="M52 12 L62 16 L70 19"/><circle cx="70" cy="19" r="4"/></svg><div class="end"><span class="avg t-warn" style="font-size:24px;font-weight:800">76.8</span><span class="delta t-bad">▼ 4.1</span></div></div>
+              <div class="ax-list-item spacious"><span class="dot teal"></span><div class="main"><div class="title">Art</div><div class="desc">P6 · Ms. Cho · 3 graded</div></div><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 12 L12 13 L22 11 L32 12 L42 12 L52 11"/><path d="M52 11 L62 11 L70 12"/><circle cx="70" cy="12" r="4"/></svg><div class="end"><span class="avg t-good" style="font-size:24px;font-weight:800">98.0</span><span class="delta" style="color:var(--ax-text-3)">—</span></div></div>
+            </div></div>
+        </div></div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- ============ 5. ACTIVITY ============ -->
+  <section class="screen">
+    <div class="about">
+      <span class="route">/activity</span>
+      <h2>Activity</h2>
+      <p>The one cross-student screen and the Telegram Mini App landing route. Each row carries the kid's avatar so two children never blur together. System events use an error StatusDot, never a badge.</p>
+      <div class="chips"><span class="chip">SegmentedControl</span><span class="chip">List · day groups</span><span class="chip">Avatar categorical</span><span class="chip">Timestamp relative isLive</span><span class="chip">StatusDot error</span><span class="chip">describeChange()</span></div>
+    </div>
+    <div class="frames">
+      <div class="frame-wrap"><span class="frame-label">Light · two students</span>
+      <div class="phone" data-mode="light" style="--student:var(--ax-accent)">
+        <div class="statusbar"><span>9:41</span><span>●●● ᯤ ▮</span></div>
+        <div class="ax-topnav"><div class="student"><div><b>Family</b><small>Robin · Ari</small></div></div><div class="end-group"><span class="fresh"><span class="ax-status-dot success"><i></i></span>Fresh · 12m</span><span class="hamburger"><i></i></span></div></div>
+        <nav class="ax-tablist"><span class="ax-tab">Home</span><span class="ax-tab">Assignments</span><span class="ax-tab">Grades</span><span class="ax-tab" aria-current="page">Activity</span><span class="ax-tab">Teachers</span></nav>
+        <div class="content"><div class="ax-stack" style="gap:12px">
+          <div class="controls"><div class="ax-segmented"><span aria-checked="true">All</span><span>Grades</span><span>Missing</span><span>Messages</span><span>System</span></div></div>
+          <div class="ax-list">
+            <div class="day-header">TODAY</div>
+            <div class="ax-list-item"><span class="ax-avatar sm av-orange">R</span><div class="main"><div class="title">Quiz 3 graded · 18/20</div><div class="desc">Math 7 · Order of operations</div></div><div class="end"><span class="date">2h</span></div></div>
+            <div class="ax-list-item"><span class="ax-avatar sm av-purple">R</span><div class="main"><div class="title">Marked missing</div><div class="desc">Reading log week 2 · ELA 5</div></div><div class="end"><span class="ax-badge ax-badge--error">Missing</span><span class="date">5h</span></div></div>
+            <div class="day-header">YESTERDAY</div>
+            <div class="ax-list-item"><span class="ax-avatar sm av-orange">R</span><div class="main"><div class="title">Science average 84.2 → 87.1</div><div class="desc">Lab safety quiz posted</div></div><div class="end"><span class="date">Wed</span></div></div>
+            <div class="ax-list-item"><span class="ax-avatar sm av-purple">R</span><div class="main"><div class="title">3 new assignments</div><div class="desc">Math 5 · due next week</div></div><div class="end"><span class="date">Wed</span></div></div>
+            <div class="ax-list-item"><span class="ax-avatar sm av-orange">R</span><div class="main"><div class="title">Spanish average 80.9 → 76.8</div><div class="desc">Ch. 4 vocab quiz retake missing</div></div><div class="end"><span class="date">Wed</span></div></div>
+            <div class="day-header">MON 8/24</div>
+            <div class="ax-list-item"><span class="ax-status-dot error"><i></i></span><div class="main"><div class="title">HAC login expired</div><div class="desc">Collector · re-authenticated 9:12 PM</div></div><div class="end"><span class="date">Mon</span></div></div>
+            <div class="ax-list-item"><span class="ax-avatar sm av-purple">R</span><div class="main"><div class="title">Reading log week 1 graded · 10/10</div><div class="desc">ELA 5</div></div><div class="end"><span class="date">Mon</span></div></div>
+          </div>
+        </div></div>
+      </div></div>
+      <div class="frame-wrap"><span class="frame-label">Dark · student switcher open</span>
+      <div class="phone" data-mode="dark" style="--student:var(--ax-accent)">
+        <div class="statusbar"><span>9:41</span><span>●●● ᯤ ▮</span></div>
+        <div class="ax-topnav"><div class="student"><div><b>Family</b><small>Robin · Ari</small></div></div><div class="end-group"><span class="fresh"><span class="ax-status-dot success"><i></i></span>Fresh · 12m</span><span class="hamburger"><i></i></span></div></div>
+        <nav class="ax-tablist"><span class="ax-tab">Home</span><span class="ax-tab">Assignments</span><span class="ax-tab">Grades</span><span class="ax-tab" aria-current="page">Activity</span><span class="ax-tab">Teachers</span></nav>
+        <div class="content"><div class="ax-stack" style="gap:12px">
+          <div class="controls"><div class="ax-segmented"><span aria-checked="true">All</span><span>Grades</span><span>Missing</span><span>Messages</span><span>System</span></div></div>
+          <div class="ax-list">
+            <div class="day-header">TODAY</div>
+            <div class="ax-list-item"><span class="ax-avatar sm av-orange">R</span><div class="main"><div class="title">Quiz 3 graded · 18/20</div><div class="desc">Math 7 · Order of operations</div></div><div class="end"><span class="date">2h</span></div></div>
+            <div class="ax-list-item"><span class="ax-avatar sm av-purple">R</span><div class="main"><div class="title">Marked missing</div><div class="desc">Reading log week 2 · ELA 5</div></div><div class="end"><span class="ax-badge ax-badge--error">Missing</span><span class="date">5h</span></div></div>
+            <div class="day-header">YESTERDAY</div>
+            <div class="ax-list-item"><span class="ax-avatar sm av-orange">R</span><div class="main"><div class="title">Science average 84.2 → 87.1</div><div class="desc">Lab safety quiz posted</div></div><div class="end"><span class="date">Wed</span></div></div>
+          </div>
+        </div></div>
+        <div class="scrim"></div>
+        <div class="ax-bottom-sheet" role="dialog" aria-label="Choose a student" style="max-height:44%">
+          <div class="grab"></div><h2>Who are you checking on?</h2>
+          <div class="body"><div class="ax-list" style="border-bottom:0">
+            <div class="ax-list-item"><span class="ax-avatar av-orange">R</span><div class="main"><div class="title">Robin</div><div class="desc">7th · Example MS</div></div><div class="end"><span class="ax-status-dot error"><i></i>1 missing</span></div></div>
+            <div class="ax-list-item"><span class="ax-avatar av-purple">R</span><div class="main"><div class="title">Ari</div><div class="desc">5th · Example Elementary</div></div><div class="end"><span class="ax-status-dot error"><i></i>1 missing</span></div></div>
+            <div class="ax-list-item"><span class="ax-avatar" style="background:var(--ax-accent-muted);color:var(--ax-accent)">✦</span><div class="main"><div class="title">Everyone</div><div class="desc">Family activity feed</div></div><div class="end"><span class="ax-status-dot accent"><i></i>current</span></div></div>
+          </div></div>
+        </div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- ============ 6. TEACHERS ============ -->
+  <section class="screen">
+    <div class="about">
+      <span class="route">/s/robin/teachers</span>
+      <h2>Teachers &amp; contacts</h2>
+      <p>The three actions a parent takes most are full-width buttons at the top. Teachers are grouped once per person, tinted by their course, with a 44px mail target. Harvested teacher links (<code style="font-family:var(--pg-mono);font-size:12px">family.teacherLinks</code>: website, Classroom, Schoology, syllabus) sit on their own line under the course — never in the end slot, where they collided with Email on a phone. No link on file → a muted "Find site" search. Tapping the name opens a teacher sheet with every link and where it was found.</p>
+      <div class="chips"><span class="chip">Stack · Button full</span><span class="chip">List</span><span class="chip">Avatar course-tinted</span><span class="chip">IconButton</span><span class="chip">Link · new tab</span><span class="chip">BottomSheet hug · teacher sheet</span><span class="chip">groupTeachers() · linksFor() · findSiteUrl()</span></div>
+    </div>
+    <div class="frames">
+      <div class="frame-wrap"><span class="frame-label">Light</span>
+      <div class="phone" data-mode="light" style="--student:var(--c-orange-dot)">
+        <div class="statusbar"><span>9:41</span><span>●●● ᯤ ▮</span></div>
+        <div class="ax-topnav"><div class="student pill"><span class="ax-avatar av-orange">R</span><b>Robin</b><span class="caret">▾</span></div><div class="end-group"><span class="fresh"><span class="ax-status-dot success"><i></i></span>Fresh · 12m</span><span class="hamburger"><i></i></span></div></div>
+        <nav class="ax-tablist"><span class="ax-tab">Home</span><span class="ax-tab">Assignments</span><span class="ax-tab">Grades</span><span class="ax-tab">Activity</span><span class="ax-tab" aria-current="page">Teachers</span></nav>
+        <div class="content"><div class="ax-stack">
+          <div style="display:flex;flex-direction:column;gap:8px;padding:0 18px"><span class="ax-button ax-button--primary full">✉ Email all teachers (6)</span><div style="display:flex;gap:8px"><span class="ax-button ax-button--secondary full">✉ Front office</span><span class="ax-button ax-button--secondary full">☎ Call office</span></div></div>
+          <div class="ax-section"><h3>Teachers</h3>
+            <div class="ax-list">
+              <div class="ax-list-item"><span class="ax-avatar av-teal">AO</span><div class="main"><div class="title">Ms. Adaeze Okafor</div><div class="desc">P1 · Math 7 · Rm 204</div><div class="links"><a>Website ↗</a><a>Classroom ↗</a></div></div><span class="ax-icon-button">✉</span></div>
+              <div class="ax-list-item"><span class="ax-avatar av-cyan">RO</span><div class="main"><div class="title">Mr. Rami Okonkwo</div><div class="desc">P2 · ELA 7 · Rm 118</div><div class="links"><a>Classroom ↗</a></div></div><span class="ax-icon-button">✉</span></div>
+              <div class="ax-list-item"><span class="ax-avatar av-purple">JD</span><div class="main"><div class="title">Mr. Javier Duarte</div><div class="desc">P3 · Science · Rm 310</div><div class="links"><a>Website ↗</a><a>Classroom ↗</a><a>Syllabus ↗</a></div></div><span class="ax-icon-button">✉</span></div>
+              <div class="ax-list-item"><span class="ax-avatar av-orange">CP</span><div class="main"><div class="title">Mrs. Carol Pruitt</div><div class="desc">P4 · Texas History · Rm 221</div><div class="links"><a class="find">Find site ↗</a></div></div><span class="ax-icon-button">✉</span></div>
+              <div class="ax-list-item"><span class="ax-avatar av-pink">MV</span><div class="main"><div class="title">Sra. Marisol Villanueva</div><div class="desc">P5 · Spanish I · Rm 140</div><div class="links"><a>Schoology ↗</a></div></div><span class="ax-icon-button">✉</span></div>
+              <div class="ax-list-item"><span class="ax-avatar av-teal">HC</span><div class="main"><div class="title">Ms. Hana Cho</div><div class="desc">P6 · Art · Rm 12 · <span style="color:var(--ax-text-3)">no email</span></div><div class="links"><a class="find">Find site ↗</a></div></div></div>
+            </div></div>
+          <div class="ax-section"><h3 style="display:flex;gap:8px;justify-content:flex-start">Advisory &amp; lunch <span class="count">▸ 2</span></h3></div>
+          <div class="ax-section"><h3>School contacts</h3>
+            <div class="ax-list">
+              <div class="ax-list-item"><div class="main"><div class="title">Front office</div><div class="desc">Example MS · (555) 010-0142</div></div><span class="ax-icon-button">☎</span><span class="ax-icon-button">✉</span></div>
+              <div class="ax-list-item"><div class="main"><div class="title">Counselor · Ms. Dana Whitfield</div><div class="desc">7th grade A–L</div></div><span class="ax-icon-button">✉</span></div>
+            </div></div>
+        </div></div>
+      </div></div>
+      <div class="frame-wrap"><span class="frame-label">Dark · teacher sheet open</span>
+      <div class="phone" data-mode="dark" style="--student:var(--c-orange-dot)">
+        <div class="statusbar"><span>9:41</span><span>●●● ᯤ ▮</span></div>
+        <div class="ax-topnav"><div class="student pill"><span class="ax-avatar av-orange">R</span><b>Robin</b><span class="caret">▾</span></div><div class="end-group"><span class="fresh"><span class="ax-status-dot success"><i></i></span>Fresh · 12m</span><span class="hamburger"><i></i></span></div></div>
+        <nav class="ax-tablist"><span class="ax-tab">Home</span><span class="ax-tab">Assignments</span><span class="ax-tab">Grades</span><span class="ax-tab">Activity</span><span class="ax-tab" aria-current="page">Teachers</span></nav>
+        <div class="content"><div class="ax-stack">
+          <div style="display:flex;flex-direction:column;gap:8px;padding:0 18px"><span class="ax-button ax-button--primary full">✉ Email all teachers (6)</span><div style="display:flex;gap:8px"><span class="ax-button ax-button--secondary full">✉ Front office</span><span class="ax-button ax-button--secondary full">☎ Call office</span></div></div>
+          <div class="ax-section"><h3>Teachers</h3>
+            <div class="ax-list">
+              <div class="ax-list-item"><span class="ax-avatar av-teal">AO</span><div class="main"><div class="title">Ms. Adaeze Okafor</div><div class="desc">P1 · Math 7 · Rm 204</div><div class="links"><a>Website ↗</a><a>Classroom ↗</a></div></div><span class="ax-icon-button">✉</span></div>
+              <div class="ax-list-item"><span class="ax-avatar av-cyan">RO</span><div class="main"><div class="title">Mr. Rami Okonkwo</div><div class="desc">P2 · ELA 7 · Rm 118</div><div class="links"><a>Classroom ↗</a></div></div><span class="ax-icon-button">✉</span></div>
+              <div class="ax-list-item"><span class="ax-avatar av-purple">JD</span><div class="main"><div class="title">Mr. Javier Duarte</div><div class="desc">P3 · Science · Rm 310</div><div class="links"><a>Website ↗</a><a>Classroom ↗</a><a>Syllabus ↗</a></div></div><span class="ax-icon-button">✉</span></div>
+              <div class="ax-list-item"><span class="ax-avatar av-orange">CP</span><div class="main"><div class="title">Mrs. Carol Pruitt</div><div class="desc">P4 · Texas History · Rm 221</div><div class="links"><a class="find">Find site ↗</a></div></div><span class="ax-icon-button">✉</span></div>
+              <div class="ax-list-item"><span class="ax-avatar av-pink">MV</span><div class="main"><div class="title">Sra. Marisol Villanueva</div><div class="desc">P5 · Spanish I · Rm 140</div><div class="links"><a>Schoology ↗</a></div></div><span class="ax-icon-button">✉</span></div>
+              <div class="ax-list-item"><span class="ax-avatar av-teal">HC</span><div class="main"><div class="title">Ms. Hana Cho</div><div class="desc">P6 · Art · Rm 12 · <span style="color:var(--ax-text-3)">no email</span></div><div class="links"><a class="find">Find site ↗</a></div></div></div>
+            </div></div>
+          <div class="ax-section"><h3 style="display:flex;gap:8px;justify-content:flex-start">Advisory &amp; lunch <span class="count">▸ 2</span></h3></div>
+          <div class="ax-section"><h3>School contacts</h3>
+            <div class="ax-list">
+              <div class="ax-list-item"><div class="main"><div class="title">Front office</div><div class="desc">Example MS · (555) 010-0142</div></div><span class="ax-icon-button">☎</span><span class="ax-icon-button">✉</span></div>
+              <div class="ax-list-item"><div class="main"><div class="title">Counselor · Ms. Dana Whitfield</div><div class="desc">7th grade A–L</div></div><span class="ax-icon-button">✉</span></div>
+            </div></div>
+        </div></div>
+        <div class="scrim"></div>
+        <div class="ax-bottom-sheet" role="dialog" aria-label="Mr. Javier Duarte" style="max-height:58%">
+          <div class="grab"></div>
+          <div class="ax-list-item" style="padding-top:0"><span class="ax-avatar av-purple">JD</span><div class="main"><div class="title" style="font-size:20px">Mr. Javier Duarte</div><div class="desc">Science · P3 · Rm 310 · jduarte@example-isd.org</div></div></div>
+          <div class="body"><div class="ax-list" style="border-bottom:0">
+            <div class="ax-list-item compact"><div class="main"><div class="title" style="color:var(--ax-accent)">Website ↗</div><div class="desc">sites.google.com/example-isd.org/duarte-science · Seen in: "Welcome to 7th grade Science"</div></div></div>
+            <div class="ax-list-item compact"><div class="main"><div class="title" style="color:var(--ax-accent)">Classroom ↗</div><div class="desc">classroom.google.com · Seen in: "Lab safety contract"</div></div></div>
+            <div class="ax-list-item compact"><div class="main"><div class="title" style="color:var(--ax-accent)">Syllabus ↗</div><div class="desc">docs.google.com · added by you</div></div><div class="end"><span class="ax-badge ax-badge--neutral">manual</span></div></div>
+          </div></div>
+          <div class="foot"><span class="ax-button ax-button--primary">Email Mr. Duarte</span></div>
+        </div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- ============ 7. RE-AUTH + STATUS ============ -->
+  <section class="screen">
+    <div class="about">
+      <span class="route">/status</span>
+      <h2>Freshness &amp; system status</h2>
+      <p>Today the failure is a red pill with a tooltip nobody can open on a phone. Here the re-auth failure is a Banner in the AppShell slot with the fix in the copy; the header dot is always labelled; the status page replaces the tooltip.</p>
+      <div class="chips"><span class="chip">AppShell banner slot</span><span class="chip">Banner error / warning</span><span class="chip">StatusDot labelled</span><span class="chip">List</span><span class="chip">Timestamp relative</span><span class="chip">summarizeRuns()</span></div>
+    </div>
+    <div class="frames">
+      <div class="frame-wrap"><span class="frame-label">Light · re-auth banner on Home</span>
+      <div class="phone" data-mode="light" style="--student:var(--c-orange-dot)">
+        <div class="statusbar"><span>9:41</span><span>●●● ᯤ ▮</span></div>
+        <div class="ax-banner ax-banner--error"><span class="ico">!</span><div><b>HAC login expired</b><p>Sign in again on the collector to resume updates. Last successful check 14h ago. <a>Open status</a></p></div></div>
+        <div class="ax-topnav"><div class="student pill"><span class="ax-avatar av-orange">R</span><b>Robin</b><span class="caret">▾</span></div><div class="end-group"><span class="fresh"><span class="ax-status-dot error"><i></i></span>Error</span><span class="hamburger"><i></i></span></div></div>
+        <nav class="ax-tablist"><span class="ax-tab" aria-current="page">Home</span><span class="ax-tab">Assignments</span><span class="ax-tab">Grades</span><span class="ax-tab">Activity</span><span class="ax-tab">Teachers</span></nav>
+        <div class="content" style="height:calc(844px - 52px - 59px - 45px - 86px)"><div class="ax-stack">
+          <div class="ax-section"><h3>Needs attention</h3>
+            <div class="ax-list"><div class="ax-empty"><span class="ico">✓</span><b>All caught up</b><p>Nothing missing or due today 🎉</p></div></div></div>
+          <div class="ax-section"><h3>This week</h3>
+            <div class="load"><div><i style="height:10px"></i>M</div><div><i style="height:18px"></i>T</div><div><i style="height:6px"></i>W</div><div class="today"><i style="height:26px"></i>T</div><div><i style="height:22px"></i>F</div><div><i style="height:0"></i>S</div><div><i style="height:0"></i>S</div></div>
+            <div class="ax-list">
+              <div class="day-header">FRI 8/28</div>
+              <div class="ax-list-item compact"><span class="mark test">T</span><div class="main"><div class="title">Unit 1 test — integers &amp; rationals</div><div class="desc">Math 7 · Assessment</div></div><div class="end"><span class="date">Fri</span></div></div>
+              <div class="ax-list-item compact"><span class="mark">HW</span><div class="main"><div class="title">Read ch. 3, answer 1–8</div><div class="desc">Texas History</div></div><div class="end"><span class="date">Fri</span></div></div>
+            </div></div>
+        </div></div>
+      </div></div>
+      <div class="frame-wrap"><span class="frame-label">Dark · status page (from drawer)</span>
+      <div class="phone" data-mode="dark" style="--student:var(--ax-accent)">
+        <div class="statusbar"><span>9:41</span><span>●●● ᯤ ▮</span></div>
+        <div class="ax-banner ax-banner--warning"><span class="ico">!</span><div><b>Classroom data is stale</b><p>Last check 3h ago — the collector timer may not be firing.</p></div></div>
+        <div class="ax-topnav"><div class="student"><div><b>Status</b><small>Collector · every 30 min</small></div></div><div class="end-group"><span class="fresh"><span class="ax-status-dot warning"><i></i></span>Stale</span><span class="hamburger"><i></i></span></div></div>
+        <div class="content no-tabs" style="height:calc(844px - 52px - 59px - 70px)"><div class="ax-stack">
+          <div class="ax-section"><h3>Adapters</h3>
+            <div class="ax-list">
+              <div class="ax-list-item"><span class="ax-status-dot success"><i></i></span><div class="main"><div class="title">HAC</div><div class="desc">12m ago · 61 assignments · 6 courses · 0 warnings</div></div><div class="end"><span class="date">ok</span></div></div>
+              <div class="ax-list-item"><span class="ax-status-dot warning"><i></i></span><div class="main"><div class="title">Classroom</div><div class="desc">3h ago · 14 assignments · 1 warning</div></div><div class="end"><span class="date">stale</span></div></div>
+              <div class="ax-list-item"><span class="ax-status-dot success"><i></i></span><div class="main"><div class="title">Links</div><div class="desc">Yesterday · 6 teachers · 41 messages scanned · 2 links added</div></div><div class="end"><span class="date">ok · daily</span></div></div>
+              <div class="ax-list-item"><span class="ax-status-dot neutral"><i></i></span><div class="main"><div class="title">Campus events</div><div class="desc">Not configured yet</div></div><div class="end"><span class="date">—</span></div></div>
+            </div></div>
+          <div class="ax-section"><h3>Recent runs</h3>
+            <div class="ax-list">
+              <div class="ax-list-item compact"><span class="ax-status-dot success"><i></i></span><div class="main"><div class="title">HAC · 9:29 AM</div><div class="desc">41s · 2 changes</div></div></div>
+              <div class="ax-list-item compact"><span class="ax-status-dot success"><i></i></span><div class="main"><div class="title">HAC · 8:59 AM</div><div class="desc">38s · no changes</div></div></div>
+              <div class="ax-list-item compact"><span class="ax-status-dot warning"><i></i></span><div class="main"><div class="title">Classroom · 6:30 AM</div><div class="desc">Warning: guardian API returned 0 courses</div></div></div>
+              <div class="ax-list-item compact"><span class="ax-status-dot success"><i></i></span><div class="main"><div class="title">Links · Wed 6:00 AM</div><div class="desc">2 links added · Duarte website, Okonkwo Classroom</div></div></div>
+              <div class="ax-list-item compact"><span class="ax-status-dot error"><i></i></span><div class="main"><div class="title">HAC · Mon 8:59 PM</div><div class="desc">Error: login page detected — re-auth needed</div></div></div>
+            </div></div>
+        </div></div>
+      </div></div>
+    </div>
+  </section>
+
+
+  <!-- ============ 7b. COURSE DETAIL ============ -->
+  <section class="screen">
+    <div class="about">
+      <span class="route">/s/robin/grades/science</span>
+      <h2>Course detail</h2>
+      <p>The one line chart in the app: a single series (this course's running average) with a hairline reference at the "good" threshold, a crosshair tooltip naming the assignment that moved it, and the endpoint labelled. Category scores are meters with a target mark. The graded list underneath is the chart's table-view twin.</p>
+      <div class="chips"><span class="chip">Stat tile · hero figure</span><span class="chip">LineChart · recharts</span><span class="chip">crosshair + tooltip</span><span class="chip">ProgressBar marks</span><span class="chip">useTheme() for token values</span></div>
+    </div>
+    <div class="frames">
+      <div class="frame-wrap"><span class="frame-label">Light · draws on once when opened</span>
+      <div class="phone" data-mode="light" style="--student:var(--c-orange-dot)">
+        <div class="statusbar"><span>9:41</span><span>●●● ᯤ ▮</span></div>
+        <div class="ax-topnav"><div class="student pill"><span class="ax-avatar av-orange">R</span><b>Robin</b><span class="caret">▾</span></div><div class="end-group"><span class="fresh"><span class="ax-status-dot success"><i></i></span>Fresh · 12m</span><span class="hamburger"><i></i></span></div></div>
+        <nav class="ax-tablist"><span class="ax-tab">Home</span><span class="ax-tab">Assignments</span><span class="ax-tab" aria-current="page">Grades</span><span class="ax-tab">Activity</span><span class="ax-tab">Teachers</span></nav><div class="content"><div class="ax-stack" style="gap:16px">
+          <div class="stat"><span class="lab"><span class="dot purple" style="display:inline-block;vertical-align:middle;margin-right:6px"></span>Science · P3 · Mr. Duarte</span><span class="val t-ok">87.1</span><span class="delta t-good">▲ 2.9 since Aug 12 · marking period 1</span></div>
+          <div class="chart" style="position:relative">
+              <svg viewBox="0 0 354 170" role="img" aria-label="Science running average, marking period 1">
+                <line class="grid" x1="36" x2="350" y1="20" y2="20"/><line class="grid" x1="36" x2="350" y1="60" y2="60"/><line class="grid" x1="36" x2="350" y1="100" y2="100"/><line class="grid" x1="36" x2="350" y1="140" y2="140"/>
+                <text class="tick" x="30" y="24" text-anchor="end">100</text><text class="tick" x="30" y="64" text-anchor="end">90</text><text class="tick" x="30" y="104" text-anchor="end">80</text><text class="tick" x="30" y="144" text-anchor="end">70</text>
+                <line class="ref" x1="36" x2="350" y1="60" y2="60"/><text class="tick" x="40" y="56">good · 90</text>
+                <path class="wash" d="M40 92 L70 96 L100 90 L130 98 L160 104 L190 100 L220 106 L250 96 L280 90 L310 84 L340 72 L340 140 L40 140 Z"/>
+                <path class="line" d="M40 92 L70 96 L100 90 L130 98 L160 104 L190 100 L220 106 L250 96 L280 90 L310 84 L340 72"/>
+                <line class="xh" x1="250" x2="250" y1="14" y2="150"/>
+                <circle class="dot" cx="250" cy="96" r="4"/><circle class="dot" cx="340" cy="72" r="4"/>
+                <text class="end" x="340" y="64" text-anchor="end">87.1</text>
+                <text class="tick" x="40" y="164">Aug 12</text><text class="tick" x="190" y="164" text-anchor="middle">Sep 10</text><text class="tick" x="340" y="164" text-anchor="end">Oct 9</text>
+              </svg>
+              <div class="tip" style="left:150px;top:6px"><i></i>Sep 24 · Lab safety quiz 19/20<b>84.2</b></div>
+            </div>
+          <div class="ax-section"><h3>Categories <span class="count">weight · score</span></h3>
+            <div class="meter"><div class="row"><span>Assessments · 40%</span><span>84.5</span></div><div class="track"><div class="fill warn" style="width:84.5%"></div><div class="mark" style="left:90%"></div></div></div>
+            <div class="meter" style="padding-top:0"><div class="row"><span>Homework · 30%</span><span>92.0</span></div><div class="track"><div class="fill good" style="width:92%"></div><div class="mark" style="left:90%"></div></div></div>
+            <div class="meter" style="padding-top:0"><div class="row"><span>Classwork · 30%</span><span>88.3</span></div><div class="track"><div class="fill" style="width:88.3%"></div><div class="mark" style="left:90%"></div></div><div class="marks"><span>0</span><span>mark · 90 good</span><span>100</span></div></div>
+          </div>
+          <div class="ax-section"><h3>Graded <a>All 11</a></h3>
+            <div class="ax-list">
+              <div class="ax-list-item compact"><div class="main"><div class="title">Lab safety quiz</div><div class="desc">Assessment · Sep 24</div></div><div class="end"><span class="score">19/20</span></div></div>
+              <div class="ax-list-item compact"><div class="main"><div class="title">Metric conversions</div><div class="desc">Homework · Sep 19</div></div><div class="end"><span class="score">10/10</span></div></div>
+            </div></div>
+        </div></div>
+      </div></div>
+      <div class="frame-wrap"><span class="frame-label">Dark</span>
+      <div class="phone" data-mode="dark" style="--student:var(--c-orange-dot)">
+        <div class="statusbar"><span>9:41</span><span>●●● ᯤ ▮</span></div>
+        <div class="ax-topnav"><div class="student pill"><span class="ax-avatar av-orange">R</span><b>Robin</b><span class="caret">▾</span></div><div class="end-group"><span class="fresh"><span class="ax-status-dot success"><i></i></span>Fresh · 12m</span><span class="hamburger"><i></i></span></div></div>
+        <nav class="ax-tablist"><span class="ax-tab">Home</span><span class="ax-tab">Assignments</span><span class="ax-tab" aria-current="page">Grades</span><span class="ax-tab">Activity</span><span class="ax-tab">Teachers</span></nav><div class="content"><div class="ax-stack" style="gap:16px">
+          <div class="stat"><span class="lab"><span class="dot purple" style="display:inline-block;vertical-align:middle;margin-right:6px"></span>Science · P3 · Mr. Duarte</span><span class="val t-ok">87.1</span><span class="delta t-good">▲ 2.9 since Aug 12 · marking period 1</span></div>
+          <div class="chart" style="position:relative">
+              <svg viewBox="0 0 354 170" role="img" aria-label="Science running average, marking period 1">
+                <line class="grid" x1="36" x2="350" y1="20" y2="20"/><line class="grid" x1="36" x2="350" y1="60" y2="60"/><line class="grid" x1="36" x2="350" y1="100" y2="100"/><line class="grid" x1="36" x2="350" y1="140" y2="140"/>
+                <text class="tick" x="30" y="24" text-anchor="end">100</text><text class="tick" x="30" y="64" text-anchor="end">90</text><text class="tick" x="30" y="104" text-anchor="end">80</text><text class="tick" x="30" y="144" text-anchor="end">70</text>
+                <line class="ref" x1="36" x2="350" y1="60" y2="60"/><text class="tick" x="40" y="56">good · 90</text>
+                <path class="wash" d="M40 92 L70 96 L100 90 L130 98 L160 104 L190 100 L220 106 L250 96 L280 90 L310 84 L340 72 L340 140 L40 140 Z"/>
+                <path class="line" d="M40 92 L70 96 L100 90 L130 98 L160 104 L190 100 L220 106 L250 96 L280 90 L310 84 L340 72"/>
+                <line class="xh" x1="250" x2="250" y1="14" y2="150"/>
+                <circle class="dot" cx="250" cy="96" r="4"/><circle class="dot" cx="340" cy="72" r="4"/>
+                <text class="end" x="340" y="64" text-anchor="end">87.1</text>
+                <text class="tick" x="40" y="164">Aug 12</text><text class="tick" x="190" y="164" text-anchor="middle">Sep 10</text><text class="tick" x="340" y="164" text-anchor="end">Oct 9</text>
+              </svg>
+              <div class="tip" style="left:150px;top:6px"><i></i>Sep 24 · Lab safety quiz 19/20<b>84.2</b></div>
+            </div>
+          <div class="ax-section"><h3>Categories <span class="count">weight · score</span></h3>
+            <div class="meter"><div class="row"><span>Assessments · 40%</span><span>84.5</span></div><div class="track"><div class="fill warn" style="width:84.5%"></div><div class="mark" style="left:90%"></div></div></div>
+            <div class="meter" style="padding-top:0"><div class="row"><span>Homework · 30%</span><span>92.0</span></div><div class="track"><div class="fill good" style="width:92%"></div><div class="mark" style="left:90%"></div></div></div>
+            <div class="meter" style="padding-top:0"><div class="row"><span>Classwork · 30%</span><span>88.3</span></div><div class="track"><div class="fill" style="width:88.3%"></div><div class="mark" style="left:90%"></div></div><div class="marks"><span>0</span><span>mark · 90 good</span><span>100</span></div></div>
+          </div>
+          <div class="ax-section"><h3>Graded <a>All 11</a></h3>
+            <div class="ax-list">
+              <div class="ax-list-item compact"><div class="main"><div class="title">Lab safety quiz</div><div class="desc">Assessment · Sep 24</div></div><div class="end"><span class="score">19/20</span></div></div>
+              <div class="ax-list-item compact"><div class="main"><div class="title">Metric conversions</div><div class="desc">Homework · Sep 19</div></div><div class="end"><span class="score">10/10</span></div></div>
+            </div></div>
+        </div></div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- ============ 7c. ATTENDANCE + STAAR ============ -->
+  <section class="screen">
+    <div class="about">
+      <span class="route">/s/robin/attendance · /tests</span>
+      <h2>Attendance &amp; tests</h2>
+      <p>Neither is a chart. Attendance is a ratio against a limit — a meter with the truancy line marked — plus a month grid where tardy and absent days carry a dot and a legend, never colour alone. STAAR is a scale score against cut points, so each subject is a meter with Approaches / Meets / Masters marks.</p>
+      <div class="chips"><span class="chip">Meter · ProgressBar marks</span><span class="chip">Calendar · day markers</span><span class="chip">status colours + label</span><span class="chip">no series comparison</span></div>
+    </div>
+    <div class="frames">
+      <div class="frame-wrap"><span class="frame-label">Light</span>
+      <div class="phone" data-mode="light" style="--student:var(--c-orange-dot)">
+        <div class="statusbar"><span>9:41</span><span>●●● ᯤ ▮</span></div>
+        <div class="ax-topnav"><div class="student pill"><span class="ax-avatar av-orange">R</span><b>Robin</b><span class="caret">▾</span></div><div class="end-group"><span class="fresh"><span class="ax-status-dot success"><i></i></span>Fresh · 12m</span><span class="hamburger"><i></i></span></div></div>
+        <div class="content no-tabs" style="height:calc(844px - 52px - 59px)"><div class="ax-stack" style="gap:16px">
+          <h1 class="page" style="font-size:24px">Attendance &amp; tests</h1>
+          <div class="stat" style="padding-top:0"><span class="lab">Attendance rate · since Aug 12</span><span class="val">96.7<span style="font-size:20px;color:var(--ax-text-2)">%</span></span></div>
+          <div class="meter" style="padding-top:0"><div class="track"><div class="fill good" style="width:96.7%"></div><div class="mark" style="left:90%"></div></div><div class="marks"><span>0</span><span>mark · 90 truancy line</span><span>100</span></div></div>
+          <div class="ax-section"><h3>September</h3>
+            <div class="month"><div class="dow"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+              <div class="days">
+                <div class="d">1</div><div class="d">2</div><div class="d">3</div><div class="d">4</div><div class="d off">5</div><div class="d off">6</div><div class="d off">7</div>
+                <div class="d">8</div><div class="d tardy">9<em></em></div><div class="d">10</div><div class="d">11</div><div class="d">12</div><div class="d off">13</div><div class="d off">14</div>
+                <div class="d">15</div><div class="d">16</div><div class="d absent">17<em></em></div><div class="d">18</div><div class="d">19</div><div class="d off">20</div><div class="d off">21</div>
+                <div class="d">22</div><div class="d">23</div><div class="d">24</div><div class="d today">25</div><div class="d off">26</div><div class="d off">27</div><div class="d off">28</div>
+              </div></div>
+            <div class="legend-row"><span><i style="background:var(--ax-warning)"></i>Tardy · 1</span><span><i style="background:var(--ax-error)"></i>Absent · 1</span><span><i style="background:var(--ax-text-3)"></i>Present · 16</span></div>
+          </div>
+          <div class="ax-section"><h3>STAAR · spring 2026 <span class="count">scale score</span></h3>
+            <div class="meter"><div class="row"><span>Math</span><span>1712 · Meets</span></div><div class="track"><div class="fill good" style="width:71%"></div><div class="mark" style="left:52%"></div><div class="mark" style="left:66%"></div><div class="mark" style="left:82%"></div></div></div>
+            <div class="meter" style="padding-top:0"><div class="row"><span>Reading</span><span>1640 · Approaches</span></div><div class="track"><div class="fill warn" style="width:61%"></div><div class="mark" style="left:52%"></div><div class="mark" style="left:66%"></div><div class="mark" style="left:82%"></div></div><div class="marks"><span>Approaches</span><span>Meets</span><span>Masters</span></div></div>
+          </div>
+        </div></div>
+      </div></div>
+      <div class="frame-wrap"><span class="frame-label">Dark</span>
+      <div class="phone" data-mode="dark" style="--student:var(--c-orange-dot)">
+        <div class="statusbar"><span>9:41</span><span>●●● ᯤ ▮</span></div>
+        <div class="ax-topnav"><div class="student pill"><span class="ax-avatar av-orange">R</span><b>Robin</b><span class="caret">▾</span></div><div class="end-group"><span class="fresh"><span class="ax-status-dot success"><i></i></span>Fresh · 12m</span><span class="hamburger"><i></i></span></div></div>
+        <div class="content no-tabs" style="height:calc(844px - 52px - 59px)"><div class="ax-stack" style="gap:16px">
+          <h1 class="page" style="font-size:24px">Attendance &amp; tests</h1>
+          <div class="stat" style="padding-top:0"><span class="lab">Attendance rate · since Aug 12</span><span class="val">96.7<span style="font-size:20px;color:var(--ax-text-2)">%</span></span></div>
+          <div class="meter" style="padding-top:0"><div class="track"><div class="fill good" style="width:96.7%"></div><div class="mark" style="left:90%"></div></div><div class="marks"><span>0</span><span>mark · 90 truancy line</span><span>100</span></div></div>
+          <div class="ax-section"><h3>September</h3>
+            <div class="month"><div class="dow"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+              <div class="days">
+                <div class="d">1</div><div class="d">2</div><div class="d">3</div><div class="d">4</div><div class="d off">5</div><div class="d off">6</div><div class="d off">7</div>
+                <div class="d">8</div><div class="d tardy">9<em></em></div><div class="d">10</div><div class="d">11</div><div class="d">12</div><div class="d off">13</div><div class="d off">14</div>
+                <div class="d">15</div><div class="d">16</div><div class="d absent">17<em></em></div><div class="d">18</div><div class="d">19</div><div class="d off">20</div><div class="d off">21</div>
+                <div class="d">22</div><div class="d">23</div><div class="d">24</div><div class="d today">25</div><div class="d off">26</div><div class="d off">27</div><div class="d off">28</div>
+              </div></div>
+            <div class="legend-row"><span><i style="background:var(--ax-warning)"></i>Tardy · 1</span><span><i style="background:var(--ax-error)"></i>Absent · 1</span><span><i style="background:var(--ax-text-3)"></i>Present · 16</span></div>
+          </div>
+          <div class="ax-section"><h3>STAAR · spring 2026 <span class="count">scale score</span></h3>
+            <div class="meter"><div class="row"><span>Math</span><span>1712 · Meets</span></div><div class="track"><div class="fill good" style="width:71%"></div><div class="mark" style="left:52%"></div><div class="mark" style="left:66%"></div><div class="mark" style="left:82%"></div></div></div>
+            <div class="meter" style="padding-top:0"><div class="row"><span>Reading</span><span>1640 · Approaches</span></div><div class="track"><div class="fill warn" style="width:61%"></div><div class="mark" style="left:52%"></div><div class="mark" style="left:66%"></div><div class="mark" style="left:82%"></div></div><div class="marks"><span>Approaches</span><span>Meets</span><span>Masters</span></div></div>
+          </div>
+        </div></div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- ============ 7d. MOTION ============ -->
+  <section class="screen">
+    <div class="about">
+      <h2>Motion</h2>
+      <p>Five microanimations, every one on Astryx's motion tokens (fast 175 ms · medium 410 ms · <code style="font-family:var(--pg-mono);font-size:12px">cubic-bezier(.24, 1, .4, 1)</code>) and all off under <code style="font-family:var(--pg-mono);font-size:12px">prefers-reduced-motion</code>. These loop here only so you can see them; in the app each plays once, on a real state change.</p>
+      <div class="chips"><span class="chip">useEntryAnimation</span><span class="chip">StatusDot isPulsing</span><span class="chip">recharts animationDuration</span><span class="chip">useTheme() tokens</span><span class="chip">lineart-lottie (optional)</span></div>
+    </div>
+    <div class="motion">
+      <div class="mo"><h4>New row arrives</h4><p><code>useEntryAnimation('slideDown')</code> — only elements inserted after first paint animate, which is exactly a live snapshot insert.</p>
+        <div class="stage" data-mode="light" style="flex-direction:column;align-items:stretch;gap:6px"><div style="display:flex;justify-content:space-between;font-size:14px"><span style="font-weight:700">Read ch. 3, answer 1–8</span><span style="color:var(--ax-text-2)">Fri</span></div><div class="row-in" style="display:flex;justify-content:space-between;font-size:14px;border-top:1px solid var(--ax-border);padding-top:6px"><span style="font-weight:700">Quiz 4 — fractions</span><span style="color:var(--ax-text-2)">Tue</span></div></div></div>
+      <div class="mo"><h4>Flips to Missing</h4><p>The badge mounts with <code>scaleIn</code> at the fast tempo. Nothing else on the row moves.</p>
+        <div class="stage" data-mode="light" style="justify-content:space-between"><span style="font-weight:700;font-size:14px">Ch. 4 vocabulary quiz retake</span><span class="ax-badge ax-badge--error badge-in">Missing</span></div></div>
+      <div class="mo"><h4>Collector running</h4><p>The header dot pulses — the only pulse in the app — and stops when the run finishes.</p>
+        <div class="stage" data-mode="light"><span class="fresh"><span class="ax-status-dot accent"><i class="pulse"></i></span>Checking HAC…</span></div></div>
+      <div class="mo"><h4>Average changes</h4><p>The number tweens old → new over the medium tempo; instant under reduced motion.</p>
+        <div class="stage" data-mode="light" style="gap:14px"><span style="font-weight:700;font-size:14px">Science</span><span class="count t-ok"></span><span class="delta t-good" style="font-size:12px">▲ 2.9</span></div></div>
+      <div class="mo"><h4>Chart draws on once</h4><p>Only the course-detail line animates (<code>animationDuration</code> = medium); sparklines never do.</p>
+        <div class="stage" data-mode="light"><svg viewBox="0 0 220 44" style="width:100%;height:44px"><path class="draw" d="M4 30 L30 34 L56 28 L82 33 L108 36 L134 30 L160 24 L186 18 L214 10" fill="none" stroke="var(--ax-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+      <div class="mo"><h4>All caught up (optional)</h4><p>A single-line check draws itself once — the <code>lineart-lottie</code> pipeline, no breathing loop, sized like the icon it replaces.</p>
+        <div class="stage" data-mode="light" style="justify-content:center"><svg viewBox="0 0 48 48" style="width:44px;height:44px"><path class="draw" d="M10 25 L20 35 L38 13" fill="none" stroke="var(--ax-success)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="stroke-dasharray:60;animation-name:draw2"/></svg><style>@keyframes draw2{0%{stroke-dashoffset:60}30%,100%{stroke-dashoffset:0}}</style></div></div>
+    </div>
+  </section>
+
+  <!-- ============ 8. STATES STRIP ============ -->
+  <section class="screen">
+    <div class="about">
+      <h2>Gated and loading states</h2>
+      <p>Skeletons match the row shape they replace; the string "Loading…" never appears. Sign-in and not-allow-listed are EmptyStates inside a wash shell.</p>
+      <div class="chips"><span class="chip">Skeleton index stagger</span><span class="chip">EmptyState</span><span class="chip">AppShell wash</span></div>
+    </div>
+    <div class="strip">
+      <div class="mini" data-mode="light" style="padding:18px 0">
+        <div class="ax-list">
+          <div class="ax-list-item"><div class="main" style="display:flex;flex-direction:column;gap:8px"><span class="ax-skeleton" style="width:70%"></span><span class="ax-skeleton" style="width:40%;height:11px"></span></div><span class="ax-skeleton" style="width:56px;height:22px;border-radius:9999px"></span></div>
+          <div class="ax-list-item"><div class="main" style="display:flex;flex-direction:column;gap:8px"><span class="ax-skeleton" style="width:55%"></span><span class="ax-skeleton" style="width:35%;height:11px"></span></div><span class="ax-skeleton" style="width:44px;height:14px"></span></div>
+          <div class="ax-list-item"><div class="main" style="display:flex;flex-direction:column;gap:8px"><span class="ax-skeleton" style="width:80%"></span><span class="ax-skeleton" style="width:30%;height:11px"></span></div><span class="ax-skeleton" style="width:44px;height:14px"></span></div>
+        </div>
+      </div>
+      <div class="mini" data-mode="dark" style="padding:28px 18px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
+        <div style="font-size:30px;font-weight:800;color:var(--ax-accent);letter-spacing:-.01em">skoolie</div>
+        <p style="margin:0;font-size:15px;color:var(--ax-text-2);max-width:28ch">Grades, homework and school mail for the whole family, in one place.</p>
+        <span class="ax-button ax-button--primary full">Continue with Google</span>
+        <span style="font-size:13px;color:var(--ax-text-3)">Family members only · ask the family admin to add you</span>
+      </div>
+      <div class="mini" data-mode="light" style="padding:28px 18px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center">
+        <span class="ax-empty" style="padding:0"><span class="ico" style="background:var(--ax-warning-muted);color:var(--ax-warning)">?</span><b>Not on the family list yet</b><p>You're signed in as someone@example.com. Ask the family admin to add you.</p></span>
+        <span class="ax-button ax-button--secondary" style="margin-top:8px">Sign out</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 9. DESKTOP ============ -->
+  <section class="screen wide">
+    <div class="about">
+      <span class="route">/s/robin · ≥ 1024px</span>
+      <h2>Desktop Home</h2>
+      <p>Above the AppShell breakpoint the TabList disappears and the SideNav shows every destination. Home becomes a two-panel Layout: attention and the week on the left, grades and changes on the right.</p>
+      <div class="chips"><span class="chip">AppShell · SideNav inline</span><span class="chip">Layout 2 panels</span><span class="chip">same Sections</span></div>
+    </div>
+    <div class="frames" style="overflow-x:auto">
+      <div class="frame-wrap"><span class="frame-label">Light · 1180 wide</span>
+      <div class="phone desktop" data-mode="light" style="--student:var(--c-orange-dot)">
+        <div class="desk">
+          <nav class="ax-sidenav"><div class="brand">skoolie</div>
+            <span class="ax-sidenav-item" aria-current="page">Home</span><span class="ax-sidenav-item">Assignments</span><span class="ax-sidenav-item">Grades</span><span class="ax-sidenav-item">Activity</span><span class="ax-sidenav-item">Teachers</span>
+            <div class="sec">More</div><span class="ax-sidenav-item">Attendance</span><span class="ax-sidenav-item">Test scores</span><span class="ax-sidenav-item">Calendar</span><span class="ax-sidenav-item">Messages</span>
+            <div class="sec">System</div><span class="ax-sidenav-item">Status</span><span class="ax-sidenav-item">Settings</span><span class="ax-sidenav-item">Sign out</span></nav>
+          <div class="desk-main">
+            <div class="ax-topnav"><div class="student pill"><span class="ax-avatar av-orange">R</span><div><b>Robin</b><small>7th grade · Example MS</small></div><span class="caret">▾</span></div><div class="end-group"><span class="fresh"><span class="ax-status-dot success"><i></i></span>Fresh · 12m</span></div></div>
+            <div class="desk-cols">
+              <div class="ax-stack">
+                <div class="ax-section"><h3>Needs attention <span class="count">2</span></h3>
+                  <div class="ax-list">
+                    <div class="ax-list-item"><div class="main"><div class="title">Ch. 4 vocabulary quiz retake</div><div class="desc">Spanish I · Assessment</div></div><div class="end"><span class="ax-badge ax-badge--error">Missing</span><span class="date">Tue 8/25</span></div></div>
+                    <div class="ax-list-item"><div class="main"><div class="title">Lab report: density of unknowns</div><div class="desc">Science · Homework</div></div><div class="end"><span class="ax-badge ax-badge--warning">Due today</span><span class="date">Thu 8/27</span></div></div>
+                  </div></div>
+                <div class="ax-section"><h3>This week</h3>
+                  <div class="ax-list">
+                    <div class="day-header">FRI 8/28</div>
+                    <div class="ax-list-item compact"><span class="mark test">T</span><div class="main"><div class="title">Unit 1 test — integers &amp; rationals</div><div class="desc">Math 7 · Assessment</div></div><div class="end"><span class="date">Fri</span></div></div>
+                    <div class="ax-list-item compact"><span class="mark">HW</span><div class="main"><div class="title">Read ch. 3, answer 1–8</div><div class="desc">Texas History</div></div><div class="end"><span class="date">Fri</span></div></div>
+                    <div class="day-header">MON 8/31</div>
+                    <div class="ax-list-item compact"><span class="mark">HW</span><div class="main"><div class="title">Personal narrative draft 1</div><div class="desc">ELA 7 · Project</div></div><div class="end"><span class="date">Mon</span></div></div>
+                  </div></div>
+              </div>
+              <div class="ax-stack">
+                <div class="ax-section"><h3>Grades <a>All grades</a></h3>
+                  <div class="ax-grid">
+                    <div class="ax-card"><span class="course"><span class="dot teal"></span>Math 7</span><div style="display:flex;justify-content:space-between;align-items:flex-end"><span class="avg t-good">93.4</span><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 18 L12 16 L22 17 L32 14 L42 15 L52 11"/><path d="M52 11 L62 8 L70 6"/><circle cx="70" cy="6" r="4"/></svg></div></div>
+                    <div class="ax-card"><span class="course"><span class="dot cyan"></span>ELA 7</span><div style="display:flex;justify-content:space-between;align-items:flex-end"><span class="avg t-good">91.0</span><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 12 L12 13 L22 11 L32 12 L42 12 L52 11"/><path d="M52 11 L62 11 L70 12"/><circle cx="70" cy="12" r="4"/></svg></div></div>
+                    <div class="ax-card"><span class="course"><span class="dot purple"></span>Science</span><div style="display:flex;justify-content:space-between;align-items:flex-end"><span class="avg t-ok">87.1</span><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 18 L12 16 L22 17 L32 14 L42 15 L52 11"/><path d="M52 11 L62 8 L70 6"/><circle cx="70" cy="6" r="4"/></svg></div></div>
+                    <div class="ax-card"><span class="course"><span class="dot orange"></span>Texas History</span><span class="avg t-ok">84.5</span></div>
+                    <div class="ax-card"><span class="course"><span class="dot pink"></span>Spanish I</span><div style="display:flex;justify-content:space-between;align-items:flex-end"><span class="avg t-warn">76.8</span><svg class="spark" viewBox="0 0 72 26" aria-hidden="true"><path class="ctx" d="M2 8 L12 9 L22 7 L32 10 L42 9 L52 12"/><path d="M52 12 L62 16 L70 19"/><circle cx="70" cy="19" r="4"/></svg></div></div>
+                    <div class="ax-card"><span class="course"><span class="dot teal"></span>Art</span><span class="avg t-good">98.0</span></div>
+                  </div></div>
+                <div class="ax-section"><h3>What changed <a>See all</a></h3>
+                  <div class="ax-list">
+                    <div class="ax-list-item compact"><div class="main"><div class="title">Quiz 3 graded · 18/20</div><div class="desc">Math 7 · 2h ago</div></div></div>
+                    <div class="ax-list-item compact"><div class="main"><div class="title">Science average 84.2 → 87.1</div><div class="desc">Yesterday</div></div></div>
+                    <div class="ax-list-item compact"><div class="main"><div class="title">Spanish average 80.9 → 76.8</div><div class="desc">Yesterday</div></div></div>
+                  </div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- ============ TOKENS + LEGEND ============ -->
+  <section class="legend">
+    <h2>Theme tokens, as built</h2>
+    <p style="color:var(--pg-ink-2);max-width:70ch;margin:4px 0 0">Values resolved from <code>astryx theme build</code> of the skoolie sketch (extends neutral, cool greys). Light on the left half of each swatch, dark on the right. The ink seed <code>#2A48C9</code> was re-toned by Astryx's HCT generator to <code>#3950D3</code> to hold 4.5:1 as text; categorical hues adapt per mode.</p>
+    <div class="tokens">
+      <div class="tok"><div class="sw"><i style="background:#3950D3"></i><i style="background:#B7C4FF"></i></div><div class="nm">--color-accent<small>#3950D3 · #B7C4FF</small></div></div>
+      <div class="tok"><div class="sw"><i style="background:#F3F5F8"></i><i style="background:#0F1319"></i></div><div class="nm">--color-background-body<small>#F3F5F8 · #0F1319</small></div></div>
+      <div class="tok"><div class="sw"><i style="background:#FFFFFF"></i><i style="background:#181D26"></i></div><div class="nm">--color-background-surface<small>#FFFFFF · #181D26</small></div></div>
+      <div class="tok"><div class="sw"><i style="background:#1C1B21"></i><i style="background:#E1E2EB"></i></div><div class="nm">--color-text-primary<small>#1C1B21 · #E1E2EB</small></div></div>
+      <div class="tok"><div class="sw"><i style="background:#B8232F"></i><i style="background:#FF8B8B"></i></div><div class="nm">--color-error<small>#B8232F · #FF8B8B</small></div></div>
+      <div class="tok"><div class="sw"><i style="background:#8A5A00"></i><i style="background:#F2C14E"></i></div><div class="nm">--color-warning<small>#8A5A00 · #F2C14E</small></div></div>
+      <div class="tok"><div class="sw"><i style="background:#1F6B45"></i><i style="background:#6CCB94"></i></div><div class="nm">--color-success<small>#1F6B45 · #6CCB94</small></div></div>
+      <div class="tok"><div class="sw"><i style="background:#fad0b5"></i><i style="background:#6e3500"></i></div><div class="nm">orange · student 1<small>light bg · text (dark adapts)</small></div></div>
+      <div class="tok"><div class="sw"><i style="background:#eccef3"></i><i style="background:#700084"></i></div><div class="nm">purple · student 2<small>light bg · text</small></div></div>
+      <div class="tok"><div class="sw"><i style="background:#a5e3d6"></i><i style="background:#005348"></i></div><div class="nm">teal · courses<small>light bg · text</small></div></div>
+      <div class="tok"><div class="sw"><i style="background:#fccadc"></i><i style="background:#83004b"></i></div><div class="nm">pink · courses<small>light bg · text</small></div></div>
+      <div class="tok"><div class="sw"><i style="background:#a3e0ef"></i><i style="background:#00505f"></i></div><div class="nm">cyan · courses<small>light bg · text</small></div></div>
+    </div>
+
+    <h2 style="margin-top:36px">What each drawing stands for</h2>
+    <div style="overflow-x:auto"><table>
+      <tr><th>In the mockup</th><th>Astryx component</th><th>Rule it follows</th></tr>
+      <tr><td>Compact header with ☰, avatar, name, freshness dot</td><td><code>AppShell</code> + <code>TopNav</code> + <code>MobileNavToggle</code></td><td>Below the breakpoint the TopNav is a compact bar; SideNav becomes the drawer.</td></tr>
+      <tr><td>Five equal tabs under the header</td><td><code>TabList layout="fill"</code> (no role → nav landmark, <code>aria-current</code>)</td><td>Navigation between views, not filtering.</td></tr>
+      <tr><td>Edge-to-edge rows with hairlines</td><td><code>List hasDividers</code> + <code>ListItem</code> start/end slots</td><td>Dense data is rows, not cards.</td></tr>
+      <tr><td>Solid Missing / Due today / Late pills</td><td><code>Badge variant="error" | "warning"</code></td><td>Only exceptions needing action get a badge.</td></tr>
+      <tr><td>Small T / HW squares</td><td><code>StatusDot</code> with icon, or <code>Text type="supporting"</code></td><td>Kind is metadata, never a badge.</td></tr>
+      <tr><td>Grade tiles</td><td><code>Card variant="muted"</code> in a <code>Grid</code></td><td>Discrete, reorderable widgets — the one card use.</td></tr>
+      <tr><td>All / Open / Missing / Graded</td><td><code>SegmentedControl</code></td><td>Input with exactly one value; not navigation.</td></tr>
+      <tr><td>Sheets rising from the bottom</td><td><code>BottomSheet</code> (<code>purpose="form"</code> for filters, <code>"info"</code> for detail and switcher)</td><td>Form sheets block scrim-dismiss; primary action pinned.</td></tr>
+      <tr><td>Full-width strip above the header</td><td><code>Banner status="error" | "warning"</code> in the <code>AppShell banner</code> slot</td><td>Errors needing action are banners, not empty states.</td></tr>
+      <tr><td>Coloured dot + word ("Fresh · 12m")</td><td><code>StatusDot</code> with <code>label</code></td><td>Colour never carries meaning alone.</td></tr>
+      <tr><td>Shimmering grey bars</td><td><code>Skeleton</code> with staggered <code>index</code></td><td>Match the shape of what loads; never "Loading…".</td></tr>
+      <tr><td>Centered icon + title + line</td><td><code>EmptyState</code></td><td>Say what is empty and what to do next.</td></tr>
+      <tr><td>Tiny line beside an average</td><td>Sparkline — <code>recharts</code> <code>LineChart</code>, 2px accent, 8px end-dot with surface ring, <code>isAnimationActive={false}</code></td><td>One series, no axes, no legend; a small multiple per row.</td></tr>
+      <tr><td>Seven short columns under "This week"</td><td>Load strip — <code>recharts</code> <code>BarChart</code>, ≤ 24px columns, 4px rounded caps</td><td>Emphasis: today in accent, other days in <code>--color-data-neutral</code>.</td></tr>
+      <tr><td>Bar with a tick mark on it</td><td><code>ProgressBar</code> with <code>marks</code></td><td>A ratio against a limit is a meter, not a chart.</td></tr>
+      <tr><td>The one line chart</td><td><code>recharts</code> <code>LineChart</code> + crosshair <code>Tooltip</code>, values from <code>useTheme()</code></td><td>Single series + neutral reference line; endpoint labelled; the list below is its table-view twin.</td></tr>
+    </table></div>
+  </section>
+</div>

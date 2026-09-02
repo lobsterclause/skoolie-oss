@@ -1,0 +1,40 @@
+name: District / HAC compatibility
+description: The collector doesn't parse your district's Home Access Center correctly
+labels: [district-support]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Districts skin HAC differently, so the stock selectors don't always fit. Please describe the
+        markup difference **without** pasting a real dump: no student names, IDs, teacher addresses,
+        or school names. Hand-scrub a snippet into synthetic values, or just describe the element
+        (tag, id, class) that differs.
+  - type: input
+    id: page
+    attributes:
+      label: Which HAC page
+      description: Registration, Classes, Assignments, Attendance, or Test Scores.
+    validations:
+      required: true
+  - type: textarea
+    id: symptom
+    attributes:
+      label: What the collector did
+      description: The warning from the run, and what came back empty or wrong.
+    validations:
+      required: true
+  - type: textarea
+    id: markup
+    attributes:
+      label: How your markup differs
+      description: A scrubbed snippet, or a description of the selector that changed.
+      render: html
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirm
+      options:
+        - label: Everything I pasted is synthetic — no real names, IDs, teachers, or schools.
+          required: true

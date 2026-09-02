@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # No Firebase credentials are needed anywhere in this workflow: the rules tests run against the
+  # `demo-skoolie` emulator project and the e2e suite runs the VITE_DEMO=1 fixture build.
+  CI: "true"
+
+jobs:
+  verify:
+    name: typecheck · tests · coverage · rules
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm -r --if-present typecheck
+      - run: pnpm -r --if-present test -- --run --coverage
+      # Several web modules read import.meta.env once at import time, and Vite loads apps/web/.env
+      # during tests — so a test that asserts against those without stubbing passes for whoever wrote
+      # it and fails for everyone configured differently. CI has no .env at all, so only this matrix
+      # catches it.
+      - run: pnpm --filter @skoolie/web test:env
+      - run: pnpm --filter @skoolie/firebase test:rules
+
+  e2e:
+    name: e2e (chromium)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @skoolie/web exec playwright install --with-deps chromium
+      - run: pnpm e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report/
+          retention-days: 7
+
+  mutation:
+    name: mutation (stryker)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm mutate
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mutation-reports
+          path: "*/*/reports/mutation/mutation.json"
+          retention-days: 7

@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // The collector writes with the Admin SDK (bypasses rules). Clients are read-only,
+    // gated by a per-family allowlist and a per-member role/studentIds list.
+
+    function signedIn() { return request.auth != null && request.auth.token.email_verified == true; }
+    function family(f) { return get(/databases/$(database)/documents/families/$(f)); }
+    function member(f) { return get(/databases/$(database)/documents/families/$(f)/members/$(request.auth.uid)); }
+    function isAllowlisted(f) { return signedIn() && request.auth.token.email in family(f).data.allowlist; }
+    function isMember(f) { return isAllowlisted(f) && exists(/databases/$(database)/documents/families/$(f)/members/$(request.auth.uid)); }
+    function isParent(f) { return isMember(f) && member(f).data.role == 'parent'; }
+    function ownsStudent(f, sid) { return isMember(f) && sid in member(f).data.studentIds; }
+
+    match /families/{f} {
+      allow read: if isAllowlisted(f);
+      allow write: if false;
+
+      match /members/{uid} {
+        allow read: if isParent(f) || (isMember(f) && uid == request.auth.uid);
+        // A member may edit only their own prefs; nothing else is client-writable.
+        allow update: if isMember(f) && uid == request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['prefs']);
+        allow create, delete: if false;
+      }
+
+      match /students/{sid} {
+        allow read: if isParent(f) || ownsStudent(f, sid);
+        allow write: if false;
+        match /{sub=**} { allow read: if isParent(f) || ownsStudent(f, sid); allow write: if false; }
+      }
+
+      match /events/{e} { allow read: if isMember(f); allow write: if false; }
+      match /changeEvents/{c} { allow read: if isParent(f) || (isMember(f) && resource.data.studentId in member(f).data.studentIds); allow write: if false; }
+      match /runs/{r} { allow read: if isMember(f); allow write: if false; }
+      // Messages (email summaries) are parent-only.
+      match /messages/{m} { allow read: if isParent(f); allow write: if false; }
+    }
+  }
+}

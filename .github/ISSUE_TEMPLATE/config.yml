@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security or privacy report
+    url: https://github.com/lobsterclause/skoolie-oss/security/advisories/new
+    about: Report a vulnerability privately. Never open a public issue for one, and never attach real student data.
+  - name: Setup help
+    url: https://github.com/lobsterclause/skoolie-oss/blob/main/docs/runbook.md
+    about: The runbook covers setup from scratch and the common failure modes.

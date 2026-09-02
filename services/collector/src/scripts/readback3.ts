@@ -1,0 +1,11 @@
+import "../boot.js";
+import { initFirestore } from "../sink/firestore.js";
+const db = await initFirestore(process.env.GOOGLE_APPLICATION_CREDENTIALS);
+const cs = await db.collection("families/family/students/primary/courses").get();
+console.log("courses with teacherEmail:", cs.docs.filter((d) => d.data().teacherEmail).length, "/", cs.size);
+const as = await db.collection("families/family/students/primary/assignments").get();
+const kinds: Record<string, number> = {};
+for (const d of as.docs) kinds[d.data().kind ?? "missing"] = (kinds[d.data().kind ?? "missing"] ?? 0) + 1;
+console.log("assignment kinds:", JSON.stringify(kinds));
+const fam = await db.doc("families/family").get();
+console.log("contacts:", (fam.data()?.contacts ?? []).length);

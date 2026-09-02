@@ -1,0 +1,13 @@
+[Unit]
+Description=Run skoolie collector on school-day cadence
+
+[Timer]
+# Every 30 min 06:00–22:00 America/Chicago; systemd evaluates OnCalendar in the unit's timezone below.
+OnCalendar=Mon..Fri *-*-* 06..22:00,30:00 America/Chicago
+OnCalendar=Sat,Sun *-*-* 08..20:00:00 America/Chicago
+RandomizedDelaySec=180
+Persistent=true
+Unit=skoolie-collector.service
+
+[Install]
+WantedBy=timers.target

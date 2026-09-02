@@ -1,0 +1,15 @@
+import "../boot.js";
+import * as cheerio from "cheerio";
+import { HAC_PATHS, HacClient } from "../adapters/hac/client.js";
+import { parseAttendance, postbackFields } from "../adapters/hac/parse.js";
+const c = new HacClient(process.env.HAC_BASE_URL!, process.env.HAC_USERNAME!, process.env.HAC_PASSWORD!, { sessionFile: process.env.SKOOLIE_SESSION_FILE ?? "./browser-data/hac-session.json" });
+const html = await c.get(HAC_PATHS.attendance);
+const $ = cheerio.load(html);
+const prev = $("#plnMain_cldAttendance a[title='Go to the previous month']").attr("href") ?? "";
+const arg = prev.match(/__doPostBack\('([^']+)','([^']+)'\)/);
+console.log("prev postback:", arg?.[1], arg?.[2], "| month:", $(".sg-asp-calendar-header td").filter((_, t) => /\d{4}/.test($(t).text())).text().trim());
+const fields = postbackFields(html);
+console.log("fields:", Object.keys(fields));
+const back = await c.post(HAC_PATHS.attendance, { ...fields, __EVENTTARGET: arg![1]!, __EVENTARGUMENT: arg![2]! });
+const $2 = cheerio.load(back);
+console.log("after postback month:", $2(".sg-asp-calendar-header td").filter((_, t) => /\d{4}/.test($2(t).text())).text().trim(), "| cells with title:", $2("#plnMain_cldAttendance td[title]").length, "| parsed:", JSON.stringify(parseAttendance(back)));

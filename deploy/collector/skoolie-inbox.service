@@ -1,0 +1,15 @@
+[Unit]
+# Installed as a USER unit — the README's sed strips User= and the docker.service/network-online lines,
+# which a user systemd instance cannot resolve.
+Description=skoolie inbox adapter (school mail → families/{id}/messages)
+After=docker.service network-online.target
+Requires=docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=REPLACE_WITH_YOUR_USER
+WorkingDirectory=/opt/skoolie/repo/deploy/collector
+ExecStart=/usr/bin/flock -n /opt/skoolie/inbox.lock /usr/bin/docker compose run --rm collector --adapter outlook
+TimeoutStartSec=45min
+Nice=10
