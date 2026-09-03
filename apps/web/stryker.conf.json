@@ -12,7 +12,10 @@
     "!src/**/*.test.*",
     "!src/app/Root.tsx",
     "!src/app/StudentLayout.tsx",
-    "!src/ui/Sheet.tsx"
+    "!src/ui/Sheet.tsx",
+    "!src/lib/paper.ts",
+    "!src/lib/scanner.ts",
+    "!src/lib/gmail.ts"
   ],
   "coverageAnalysis": "perTest",
   "reporters": [

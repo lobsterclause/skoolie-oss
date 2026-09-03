@@ -48,6 +48,7 @@ const routes = [
   ["calendar", "/s/robin/calendar"],
   ["teachers", "/s/robin/teachers"],
   ["teacher", "/s/robin/teachers/priya_ramesh%40example-isd.org"],
+  ["scan", "/s/robin/scan"],
   ["activity", "/activity"],
   ["messages", "/messages"],
   ["message", "/messages/m1"],

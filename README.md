@@ -132,6 +132,13 @@ configure a mailbox.
   <img src="docs/screenshots/grades-desktop-light.png" alt="The grades page on desktop: four courses with averages, trend sparklines and the change since the start of the marking period." width="580">
 </p>
 
+### Scan & send
+
+Photograph a paper form from the Teachers tab, and the page is detected, straightened and brightened in
+the browser (OpenCV.js, shipped as a static asset). The pages go to the teacher as one PDF from the
+parent's own Gmail — no mail client, no server. One-time setup (enable the Gmail API on the Firebase
+project, add the send scope to the consent screen): [`docs/scan-and-send.md`](docs/scan-and-send.md).
+
 ### Not yet
 
 Assignment descriptions and attachments (`_AssignmentDialog`), report cards, Google Classroom, campus

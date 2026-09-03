@@ -37,4 +37,6 @@ export const styles = stylex.create({
   tween: { transitionProperty: "color", transitionDuration: "var(--duration-medium)", transitionTimingFunction: "var(--ease-standard, ease)" },
   /** Course / student identity dot; identity always comes with a label next to it. */
   dot: { display: "inline-block", width: 10, height: 10, borderRadius: "var(--radius-full)", flexShrink: 0 },
+  /** A scanned page shown at full width inside the page sheet. */
+  scanPreview: { display: "block", width: "100%", height: "auto", borderRadius: "var(--radius-md)", borderWidth: 1, borderStyle: "solid", borderColor: "var(--color-border)" },
 });
