@@ -8,6 +8,7 @@
   "mutate": [
     "src/**/*.ts",
     "!src/**/*.test.ts",
+    "!src/testing/**",
     "!src/adapters/**",
     "!src/scripts/**",
     "!src/links/imap.ts",
@@ -25,12 +26,12 @@
   },
   "tempDirName": ".stryker-tmp",
   "thresholds": {
-    "high": 85,
-    "low": 75,
-    "break": 50
+    "high": 95,
+    "low": 90,
+    "break": 85
   },
   "plugins": [
     "./node_modules/@stryker-mutator/vitest-runner/dist/src/index.js"
   ],
-  "_comment": "Gates as a ratchet, not a target. The scoped baseline is ~54% (recorded in the 'scope mutation testing' commit): sink/firestore.ts, members.ts and links/graph.ts are Firestore / Graph I/O with no coverage, and the parser-shaped modules keep string-tweak mutants alive. `break` sits just under the baseline so a regression fails CI while `low`/`high` stay the targets; raise `break` as tests land."
+  "_comment": "Gates as a ratchet, not a target. The scoped baseline is ~89% (collector unit tests, recorded in the 'cover the collector's Firestore and Graph glue' commit). `break` sits just under the baseline so a regression fails CI while `low`/`high` stay the targets; raise `break` as tests land."
 }
