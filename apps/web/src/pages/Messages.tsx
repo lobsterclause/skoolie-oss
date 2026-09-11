@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router";
 import { format, parseISO } from "date-fns";
 import { Badge } from "@astryxdesign/core/Badge";
 import { EmptyState } from "@astryxdesign/core/EmptyState";
+import { Link } from "@astryxdesign/core/Link";
 import { List, ListItem } from "@astryxdesign/core/List";
 import { Markdown } from "@astryxdesign/core/Markdown";
 import { Section } from "@astryxdesign/core/Section";
@@ -18,12 +19,20 @@ import { Sheet } from "../ui/Sheet.js";
 
 const CATEGORY: Record<Message["category"], string> = { teacher: "Teacher", school: "School", district: "District", bus: "Bus", classroom: "Classroom", hac: "HAC", other: "Other" };
 
+/** Deep link back to the original mailbox item, when we have a raw mailbox id to build one from. */
+function sourceLink(m: Message): string | undefined {
+  if (!m.sourceId) return undefined;
+  if (m.source === "outlook") return `https://outlook.office.com/mail/deeplink/read/${encodeURIComponent(m.sourceId)}`;
+  return undefined;
+}
+
 /** School mail summaries. A badge only when a message still needs something from a parent. */
 export function MessagesPage() {
   const messages = useMessages(useUid());
   const { messageId } = useParams();
   const navigate = useNavigate();
   const selected = messageId ? messages.data.find((m) => m.id === messageId) : undefined;
+  const selectedSourceLink = selected ? sourceLink(selected) : undefined;
   return (
     <Page title="Messages">
       {messages.loading ? (
@@ -59,6 +68,11 @@ export function MessagesPage() {
               <Timestamp value={selected.receivedAt} format="date_time" />
             </HStack>
             <Markdown headingLevelStart={3}>{selected.summary}</Markdown>
+            {selectedSourceLink && (
+              <Link href={selectedSourceLink} isExternalLink isStandalone>
+                View original message
+              </Link>
+            )}
             {selected.actionItems.length > 0 && (
               <List hasDividers density="compact" header={<Text type="label">To do</Text>}>
                 {selected.actionItems.map((it) => (
