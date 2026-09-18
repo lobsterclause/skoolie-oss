@@ -1,6 +1,10 @@
 <h1 align="center">skoolie</h1>
 
 <p align="center">
+  <img src="docs/assets/skoolie-banner.png" alt="Skoolie — your family's school data, on your terms" width="1200">
+</p>
+
+<p align="center">
   <strong>A self-hosted dashboard for your kid's school data.</strong><br>
   It signs in to Home Access Center on a timer, pulls grades, assignments, attendance and test<br>
   scores into <em>your</em> Firebase project, and answers the only question you actually have:<br>
