@@ -23,6 +23,7 @@ const AttendancePage = page(() => import("./pages/Attendance.js").then((m) => ({
 const TestsPage = page(() => import("./pages/Tests.js").then((m) => ({ default: m.TestsPage })));
 const CalendarPage = page(() => import("./pages/Calendar.js").then((m) => ({ default: m.CalendarPage })));
 const TeachersPage = page(() => import("./pages/Teachers.js").then((m) => ({ default: m.TeachersPage })));
+const ScanPage = page(() => import("./pages/Scan.js").then((m) => ({ default: m.ScanPage })));
 const MessagesPage = page(() => import("./pages/Messages.js").then((m) => ({ default: m.MessagesPage })));
 const StatusPage = page(() => import("./pages/Status.js").then((m) => ({ default: m.StatusPage })));
 const SettingsPage = page(() => import("./pages/Settings.js").then((m) => ({ default: m.SettingsPage })));
@@ -47,6 +48,7 @@ export const router = createBrowserRouter([
           { path: "calendar", Component: CalendarPage },
           { path: "teachers", Component: TeachersPage },
           { path: "teachers/:teacherKey", Component: TeachersPage },
+          { path: "scan", Component: ScanPage },
         ],
       },
       { path: "activity", Component: ActivityPage },

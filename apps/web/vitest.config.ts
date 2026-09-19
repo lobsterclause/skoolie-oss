@@ -22,7 +22,9 @@ export default mergeConfig(
       coverage: {
         provider: "v8",
         include: ["src/lib/**", "src/ui/**", "src/app/**"],
-        exclude: ["**/*.test.*", "src/skoolie.js"],
+        // scanner.ts / gmail.ts are canvas, script-tag and Google-popup glue: covered end to end by
+        // e2e/scan.spec.ts, unreachable from jsdom.
+        exclude: ["**/*.test.*", "src/skoolie.js", "src/lib/scanner.ts", "src/lib/gmail.ts"],
         reporter: ["text-summary", "json-summary"],
         thresholds: {"statements":55,"branches":45,"functions":45,"lines":55},
       },

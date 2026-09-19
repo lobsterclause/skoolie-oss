@@ -87,6 +87,7 @@ export function AppFrame({ children }: { children: ReactNode }) {
           <NavItem href={`${base}/tests`} label="Test scores" />
           <NavItem href={`${base}/calendar`} label="Calendar" />
           <NavItem href={`${base}/teachers`} label="Teachers & contacts" />
+          <NavItem href={`${base}/scan`} label="Scan & send" />
         </SideNavSection>
       )}
       <SideNavSection title="Family">

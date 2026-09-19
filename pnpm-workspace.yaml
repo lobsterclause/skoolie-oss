@@ -7,6 +7,8 @@ allowBuilds:
   # firebase-tools ships re2 as an optional native regex engine; it falls back to RegExp
   # without it, and the emulator we use it for does not need it.
   re2: false
+  # core-js (pulled in by jspdf) only prints a funding banner from its postinstall.
+  core-js: false
   '@astryxdesign/cli': true
   '@astryxdesign/core': true
   '@firebase/util': true

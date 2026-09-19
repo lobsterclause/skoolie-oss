@@ -19,7 +19,7 @@ import { useStudentData } from "../app/StudentLayout.js";
 import { useFamilyContext } from "../app/context.js";
 import { courseHue, hueStyle } from "../lib/colors.js";
 import { courseLabel, findSiteUrl, groupTeachers, initials, isSkippedCourse, linkLabel, linksFor, mailto, naturalName, type TeacherRow } from "../lib/contacts.js";
-import { MailIcon, Page, PhoneIcon, Region, SkeletonRows } from "../ui/bits.js";
+import { CameraIcon, MailIcon, Page, PhoneIcon, Region, SkeletonRows } from "../ui/bits.js";
 import { Sheet } from "../ui/Sheet.js";
 
 const keyOf = (t: TeacherRow) => (t.email ?? t.teacher).toLowerCase();
@@ -45,6 +45,7 @@ export function TeachersPage() {
         <VStack gap={2}>
           <Button variant="primary" width="100%" label={`Email all teachers (${emails.length})`} href={mailto(emails, { subject, bcc: true })} isDisabled={emails.length === 0} />
           {office && <Button width="100%" label={`Email ${office.label.toLowerCase()}`} href={mailto([office.email], { subject })} />}
+          <Button width="100%" label="Scan & send a document" icon={<Icon icon={CameraIcon} />} href={`${base}/scan`} />
           {office?.phone && <Button width="100%" variant="ghost" label={`Call ${office.phone}`} href={`tel:${office.phone.replace(/[^\d+]/g, "")}`} />}
         </VStack>
       </Section>
@@ -98,7 +99,7 @@ export function TeachersPage() {
       )}
 
       <Sheet isOpen={Boolean(selected)} onOpenChange={(o) => !o && navigate(`${base}/teachers`, { replace: true })} label="Teacher" title={selected ? naturalName(selected.teacher) : "Teacher"} height="hug">
-        {selected && <TeacherSheet t={selected} links={linksFor(links, selected.email)} subject={subject} school={student.school} />}
+        {selected && <TeacherSheet t={selected} links={linksFor(links, selected.email)} subject={subject} school={student.school} base={base} />}
       </Sheet>
     </Page>
   );
@@ -138,7 +139,7 @@ function TeacherItem({ t, links, subject, school, onOpen }: { t: TeacherRow; lin
   );
 }
 
-function TeacherSheet({ t, links, subject, school }: { t: TeacherRow; links: TeacherLink[]; subject: string; school?: string }) {
+function TeacherSheet({ t, links, subject, school, base }: { t: TeacherRow; links: TeacherLink[]; subject: string; school?: string; base: string }) {
   return (
     <VStack gap={4}>
       <List hasDividers density="compact" header={<Text type="label">Courses</Text>}>
@@ -162,6 +163,7 @@ function TeacherSheet({ t, links, subject, school }: { t: TeacherRow; links: Tea
       {t.email && (
         <VStack gap={1}>
           <Button variant="primary" width="100%" label={`Email ${naturalName(t.teacher)}`} href={mailto([t.email], { subject })} />
+          <Button width="100%" label="Send a scanned document" icon={<Icon icon={CameraIcon} />} href={`${base}/scan?to=${encodeURIComponent(t.email)}`} />
           <Text type="supporting" justify="center">
             {t.email}
           </Text>

@@ -19,7 +19,7 @@
     "dev:web": "pnpm --filter @skoolie/web dev",
     "collect": "pnpm --filter @skoolie/collector start",
     "coverage": "pnpm -r --if-present test -- --run --coverage",
-    "mutate": "pnpm --filter @skoolie/shared --filter @skoolie/collector --filter @skoolie/web exec stryker run",
+    "mutate": "pnpm --no-bail --filter @skoolie/shared --filter @skoolie/collector --filter @skoolie/web exec stryker run",
     "e2e": "pnpm --filter @skoolie/web e2e",
     "verify:full": "bash .claude/verify.sh && pnpm --filter @skoolie/web test:env && pnpm mutate && pnpm e2e"
   }
